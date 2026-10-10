@@ -1,9 +1,10 @@
-<title>財金一丙 代辦板</title>
+<title>財金一丙 學習攻略</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
-  /* Layout: a class noticeboard. Sticky header, one countdown-led list, calendar as an alternate lens.
+  /* Layout: a class noticeboard. Sticky header + who's-here strip, countdown-led schedule with a
+     calendar lens, and a contribution bar pinned to the bottom so adding info is always one tap away.
      Graphite paper; red/amber are semantic urgency colors only. */
   :root{
     --paper:#F4F4F2; --paper-2:#E9E9E6; --card:#FBFBFA;
@@ -12,6 +13,7 @@
     --hot:#A63D2F; --hot-bg:rgba(166,61,47,.10);
     --warn:#8A6410; --warn-bg:rgba(176,126,20,.13);
     --ok:#3F6652; --ok-bg:rgba(63,102,82,.11);
+    --scrim:rgba(0,0,0,.38);
     --font-sans:"Noto Sans TC","PingFang TC","Heiti TC","Microsoft JhengHei",sans-serif;
     --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   }
@@ -23,6 +25,7 @@
       --hot:#E2907F; --hot-bg:rgba(226,144,127,.14);
       --warn:#DDB45A; --warn-bg:rgba(221,180,90,.14);
       --ok:#86B79B; --ok-bg:rgba(134,183,155,.13);
+      --scrim:rgba(0,0,0,.6);
       color-scheme:dark;
     }
   }
@@ -33,12 +36,13 @@
     --hot:#E2907F; --hot-bg:rgba(226,144,127,.14);
     --warn:#DDB45A; --warn-bg:rgba(221,180,90,.14);
     --ok:#86B79B; --ok-bg:rgba(134,183,155,.13);
+    --scrim:rgba(0,0,0,.6);
     color-scheme:dark;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{background:var(--paper);color:var(--ink);font-family:var(--font-sans);font-size:16px;line-height:1.7;-webkit-tap-highlight-color:transparent;}
-  h1,h2,h3,p,ul,ol{margin:0;}
+  h1,h2,h3,h4,p,ul,ol{margin:0;}
   ul,ol{padding:0;list-style:none;}
   button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit;}
   button{border:0;background:none;cursor:pointer;}
@@ -46,26 +50,30 @@
   .wrap{max-width:860px;margin-inline:auto;padding-inline:max(16px,4vw);}
   .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
   .kicker{font-family:var(--font-mono);font-size:12px;letter-spacing:.12em;color:var(--mute);font-weight:600;}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;}}
 
   /* header */
   .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--paper);border-bottom:1px solid var(--line);}
-  .top .wrap{display:flex;align-items:center;gap:12px;min-height:56px;flex-wrap:wrap;padding-block:8px;}
+  .top .wrap{display:flex;align-items:center;gap:10px 12px;min-height:56px;flex-wrap:wrap;padding-block:8px;}
   .brand{font-weight:900;font-size:18px;display:flex;align-items:center;gap:8px;margin-right:auto;}
   .brand i{width:20px;height:13px;border-radius:50%;background:var(--ink);display:block;}
   .pages{display:flex;gap:4px;flex-wrap:wrap;}
   .pg{padding:7px 14px;border-radius:999px;font-weight:700;font-size:14px;color:var(--ink-2);border:1.5px solid transparent;}
   .pg[aria-current="page"]{background:var(--ink);color:var(--paper);}
   .pg:not([aria-current="page"]):hover{border-color:var(--line);}
+  .here{border-top:1px solid var(--line);font-size:13px;color:var(--ink-2);}
+  .here .wrap{display:flex;align-items:center;gap:8px;min-height:34px;flex-wrap:wrap;padding-block:4px;}
+  .here .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);flex:none;}
+  .here b{color:var(--ink);font-weight:700;}
+  .here .me{font-size:12px;color:var(--mute);margin-left:auto;text-decoration:underline;text-underline-offset:3px;}
 
-  main{padding-block:28px 56px;}
-  .banner{background:var(--warn-bg);color:var(--ink);border-radius:10px;padding:10px 14px;font-size:13.5px;line-height:1.6;margin-bottom:22px;}
-  .banner b{color:var(--warn);}
+  main{padding-block:28px 140px;}
   h2{font-size:clamp(24px,5vw,34px);font-weight:900;line-height:1.25;letter-spacing:-.01em;text-wrap:balance;}
-  .lede{color:var(--ink-2);margin-top:6px;font-size:15px;}
+  .lede{color:var(--ink-2);margin-top:6px;font-size:15px;max-width:62ch;}
 
   /* summary */
   .sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-block:1.5px solid var(--ink);margin-top:20px;}
-  .sum div{padding:14px 12px 14px 0;display:flex;flex-direction:column;}
+  .sum div{padding:14px 12px 14px 0;display:flex;flex-direction:column;min-width:0;}
   .sum div + div{padding-left:14px;border-left:1px solid var(--line);}
   .sum b{font-family:var(--font-mono);font-size:clamp(26px,6vw,38px);font-weight:600;line-height:1.1;}
   .sum span{font-size:13px;color:var(--ink-2);}
@@ -80,8 +88,6 @@
   .chip{padding:5px 12px;border-radius:999px;border:1.5px solid var(--line);font-size:13.5px;font-weight:700;color:var(--ink-2);}
   .chip[aria-pressed="true"]{border-color:var(--ink);background:var(--acc-soft);color:var(--ink);}
   .search{flex:1 1 180px;min-width:0;padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);}
-  .tgl{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--ink-2);}
-  .tgl input{width:16px;height:16px;accent-color:var(--ink);}
 
   /* list */
   .group{margin-top:30px;}
@@ -92,7 +98,7 @@
   details.past > summary::-webkit-details-marker{display:none;}
   details.past > summary .ghead h3::after{content:" ＋";font-family:var(--font-mono);color:var(--mute);}
   details.past[open] > summary .ghead h3::after{content:" －";}
-  .item{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:4px 14px;padding:16px 0;border-bottom:1px solid var(--line);align-items:start;}
+  .item{display:grid;grid-template-columns:72px minmax(0,1fr);gap:4px 14px;padding:16px 0;border-bottom:1px solid var(--line);align-items:start;}
   .count{display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:10px;padding:8px 4px;background:var(--paper-2);text-align:center;min-height:64px;}
   .count b{font-family:var(--font-mono);font-size:26px;font-weight:600;line-height:1.1;}
   .count small{font-size:11.5px;color:var(--mute);line-height:1.3;}
@@ -101,33 +107,33 @@
   .item.warn .count{background:var(--warn-bg);color:var(--warn);}
   .item.warn .count small{color:var(--warn);}
   .item.past .count{opacity:.6;}
-  .item.done .main{opacity:.5;}
-  .item.done .main h4{text-decoration:line-through;}
   .main{min-width:0;display:flex;flex-direction:column;gap:4px;}
   .tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
   .tag{font-size:12px;font-weight:700;padding:1px 9px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);}
   .tag.type{background:var(--ink);color:var(--paper);border-color:var(--ink);}
   .tag.chg{background:var(--warn-bg);color:var(--warn);border-color:transparent;}
-  .main h4{margin:0;font-size:17px;font-weight:900;line-height:1.4;}
+  .main h4{font-size:17px;font-weight:900;line-height:1.4;}
   .meta{font-size:14px;color:var(--ink-2);display:flex;flex-wrap:wrap;gap:2px 14px;}
   .meta .mono{font-size:13px;}
   .more{font-size:13px;color:var(--mute);}
   .more s{font-family:var(--font-mono);}
   .src{font-size:12.5px;color:var(--mute);}
-  .ck{width:28px;height:28px;border-radius:8px;border:1.8px solid var(--ink);display:grid;place-items:center;background:var(--card);margin-top:2px;}
-  .ck[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:#fff;}
-  .ck svg{width:16px;height:16px;opacity:0;}
-  .ck[aria-pressed="true"] svg{opacity:1;}
-  @media (max-width:520px){.item{grid-template-columns:60px minmax(0,1fr) auto;gap:4px 10px;}}
+  .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;}
+  .mini{font-size:13px;font-weight:700;padding:4px 12px;border-radius:999px;border:1.5px solid var(--ink);color:var(--ink);}
+  .mini.ghost{border-color:var(--line);color:var(--ink-2);}
+  @media (max-width:520px){.item{grid-template-columns:60px minmax(0,1fr);gap:4px 10px;}}
   .empty{padding:28px 0;color:var(--mute);font-size:15px;}
+  .emptybox{margin-top:26px;border:1.5px dashed var(--line);border-radius:12px;padding:22px 18px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;}
+  .emptybox b{font-size:17px;font-weight:900;}
+  .emptybox p{color:var(--ink-2);font-size:14.5px;}
 
   /* calendar */
-  .calhead{display:flex;align-items:center;justify-content:space-between;margin-top:26px;}
+  .calhead{display:flex;align-items:center;justify-content:space-between;margin-top:26px;gap:8px;}
   .calhead b{font-size:20px;font-weight:900;}
   .calhead button{padding:6px 14px;border:1.5px solid var(--line);border-radius:999px;font-weight:700;}
   .calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;margin-top:12px;}
   .dow{font-family:var(--font-mono);font-size:12px;color:var(--mute);text-align:center;padding-bottom:4px;}
-  .day{min-height:58px;border-radius:8px;border:1px solid var(--line);background:var(--card);padding:4px 5px;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;}
+  .day{min-height:58px;border-radius:8px;border:1px solid var(--line);background:var(--card);padding:4px 5px;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;min-width:0;}
   .day.out{opacity:.35;}
   .day.today{border:2px solid var(--ink);}
   .day[aria-pressed="true"]{background:var(--acc-soft);border-color:var(--ink);}
@@ -140,48 +146,79 @@
   .legend span{display:flex;align-items:center;gap:6px;}
   .legend i{width:8px;height:8px;border-radius:50%;display:block;}
 
-  /* notes + reports + form */
+  /* notes + reports */
   .notes{display:flex;flex-direction:column;margin-top:24px;}
   .note{padding:20px 0;border-top:1.5px solid var(--ink);display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px 24px;}
   .note:last-child{border-bottom:1.5px solid var(--ink);}
   .note h3{font-size:20px;font-weight:900;}
+  .note .body{min-width:0;display:flex;flex-direction:column;gap:8px;}
   .note ul{display:flex;flex-direction:column;gap:6px;font-size:15px;color:var(--ink-2);}
   .note li{display:flex;gap:10px;}
   .note li::before{content:"";flex:none;width:12px;height:8px;border-radius:50%;background:var(--ink);margin-top:10px;}
-  .note .stamp{grid-column:2;font-size:12.5px;color:var(--mute);}
-  @media (max-width:560px){.note{grid-template-columns:minmax(0,1fr);}.note .stamp{grid-column:1;}}
+  .note .none{font-size:14.5px;color:var(--mute);}
+  @media (max-width:560px){.note{grid-template-columns:minmax(0,1fr);}}
   .rep{border:1.5px solid var(--ink);border-radius:12px;background:var(--card);padding:18px;margin-top:18px;display:flex;flex-direction:column;gap:10px;}
   .rep h3{font-size:19px;font-weight:900;}
   .rep dl{display:grid;grid-template-columns:84px minmax(0,1fr);gap:6px 12px;margin:0;font-size:14.5px;}
   .rep dt{color:var(--mute);font-weight:700;}
-  .rep dd{margin:0;color:var(--ink-2);}
-  .members{display:flex;gap:6px;flex-wrap:wrap;}
+  .rep dd{margin:0;color:var(--ink-2);min-width:0;}
+  .members{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
   .members span{font-size:13px;border:1px solid var(--line);border-radius:999px;padding:1px 10px;background:var(--paper);}
   .members b{font-weight:700;margin-left:4px;color:var(--mute);font-size:12px;}
-  .form{display:flex;flex-direction:column;gap:14px;margin-top:22px;max-width:560px;}
+
+  /* owner bar */
+  .admin{margin-top:18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 12px;border-radius:10px;background:var(--acc-soft);font-size:13.5px;color:var(--ink-2);}
+  .admin b{color:var(--ink);}
+
+  /* contribute bar */
+  .cbar{position:fixed;left:0;right:0;bottom:0;z-index:20;padding-bottom:env(safe-area-inset-bottom,0px);background:var(--ink);color:var(--paper);}
+  .cbar .wrap{display:flex;align-items:center;gap:12px;min-height:64px;padding-block:10px;}
+  .cbar p{font-size:14px;line-height:1.45;flex:1;min-width:0;}
+  .cbar p small{display:block;opacity:.72;font-size:12.5px;}
+  .cbtn{flex:none;padding:12px 20px;border-radius:999px;background:var(--paper);color:var(--ink);font-weight:900;font-size:15px;}
+  @media (max-width:420px){.cbar p small{display:none;}}
+
+  /* sheet */
+  .scrim{position:fixed;inset:0;background:var(--scrim);z-index:30;display:flex;align-items:flex-end;justify-content:center;}
+  .sheet{background:var(--paper);width:min(100%,560px);max-height:88vh;overflow-y:auto;border-radius:18px 18px 0 0;padding:20px max(16px,4vw) calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px;}
+  @media (min-width:640px){.scrim{align-items:center;}.sheet{border-radius:18px;}}
+  .sheet h3{font-size:20px;font-weight:900;}
+  .sheet .x{align-self:flex-end;font-size:14px;font-weight:700;color:var(--mute);padding:2px 4px;}
+  .steps{display:flex;flex-direction:column;gap:10px;counter-reset:s;}
+  .steps li{display:flex;gap:12px;font-size:15px;counter-increment:s;}
+  .steps li::before{content:counter(s);flex:none;width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-family:var(--font-mono);font-size:12px;font-weight:600;margin-top:2px;}
+  .form{display:flex;flex-direction:column;gap:12px;}
   .form label{display:flex;flex-direction:column;gap:5px;font-weight:700;font-size:14px;}
-  .form select,.form textarea,.form input[type=text]{padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);font-weight:400;}
-  .form textarea{min-height:120px;resize:vertical;}
-  .btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 22px;border-radius:999px;font-weight:700;background:var(--ink);color:var(--paper);border:1.5px solid var(--ink);align-self:flex-start;}
+  .form .two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+  .form select,.form textarea,.form input:not([type=checkbox]){padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);font-weight:400;width:100%;min-width:0;}
+  .form textarea{min-height:110px;resize:vertical;}
+  .form .ck{flex-direction:row;align-items:center;gap:8px;font-weight:500;}
+  .form .ck input{width:18px;height:18px;accent-color:var(--ink);}
+  .form .hint{font-size:12.5px;color:var(--mute);font-weight:400;}
+  .btns{display:flex;gap:8px;flex-wrap:wrap;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 22px;border-radius:999px;font-weight:700;background:var(--ink);color:var(--paper);border:1.5px solid var(--ink);}
   .btn.ghost{background:transparent;color:var(--ink);}
-  .toast{font-size:14px;padding:10px 12px;border-radius:10px;background:var(--ok-bg);color:var(--ok);font-weight:700;}
-  .toast[hidden]{display:none;}
+  .btn.danger{background:var(--hot);border-color:var(--hot);color:#fff;}
+  .msg{font-size:14px;padding:10px 12px;border-radius:10px;font-weight:700;}
+  .msg.ok{background:var(--ok-bg);color:var(--ok);}
+  .msg.bad{background:var(--hot-bg);color:var(--hot);}
 
   /* gate */
-  .gate{min-height:70vh;display:flex;align-items:center;}
-  .gate .box{max-width:420px;display:flex;flex-direction:column;gap:14px;}
-  .gate input{padding:12px 14px;border-radius:10px;border:1.5px solid var(--ink);background:var(--card);font-family:var(--font-mono);font-size:18px;letter-spacing:.1em;}
+  .gate{min-height:60vh;display:flex;align-items:center;}
+  .gate .box{max-width:420px;width:100%;display:flex;flex-direction:column;gap:14px;}
+  .gate input{padding:12px 14px;border-radius:10px;border:1.5px solid var(--ink);background:var(--card);font-size:18px;}
   .err{color:var(--hot);font-size:14px;font-weight:700;min-height:1.4em;}
 
-  footer{border-top:1px solid var(--line);padding-block:24px 40px;font-size:12.5px;color:var(--mute);line-height:1.8;}
+  footer{border-top:1px solid var(--line);padding-block:24px 110px;font-size:12.5px;color:var(--mute);line-height:1.8;}
   footer b{color:var(--ink);}
 </style>
 
 <header class="top">
   <div class="wrap">
-    <div class="brand"><i></i>財金一丙 代辦板</div>
+    <div class="brand"><i></i>財金一丙 學習攻略</div>
     <nav class="pages" id="pages" aria-label="頁面" hidden></nav>
   </div>
+  <div class="here" id="here" hidden><div class="wrap" id="hereIn"></div></div>
 </header>
 
 <main class="wrap" id="app"></main>
@@ -193,135 +230,151 @@
   </div>
 </footer>
 
+<div class="cbar" id="cbar" hidden>
+  <div class="wrap">
+    <p>有新消息，或發現哪裡寫錯了？<small>寫一句話就好，每晚 11 點整理更新。</small></p>
+    <button class="cbtn" id="cbtn">＋ 補充／回報</button>
+  </div>
+</div>
+
+<div id="sheetRoot"></div>
+
 <script>
-  /* ================= 設定與資料（正式版改由資料庫讀取） ================= */
-  const CONFIG = { code: 'demo' };            // 範例解鎖碼，正式版會換掉
-
-  const SUBJECTS = { econ:'經濟學', fin:'財務數學', acc:'會計', eng:'英文' };
+  /* ================= 設定 ================= */
+  const DEFAULT_SUBJECTS = ['經濟學', '財務數學', '會計', '英文'];
   const TYPES = { exam:'考試', hw:'作業', report:'報告', quiz:'小考' };
+  const REVIEW_TIME = '每晚 11 點';
 
-  // off＝距今天幾天；upd＝幾天前更新；was＝改期前的 off。以下全部是範例資料。
-  const EVENTS = [
-    { id:'e1', subj:'acc',  type:'quiz',  title:'第 3 章 小考',            off:1,  time:'10:10', place:'教室', scope:'CH3 全部', weight:5,  note:'開書',              src:'老師課堂口頭公告', upd:2 },
-    { id:'e2', subj:'fin',  type:'hw',    title:'習題 1：複利與終值',      off:2,  time:'23:59', place:'e-learning 上傳 PDF', scope:'講義 Ch1 習題 1–10', weight:3, note:'需附計算過程', src:'e-learning 公告', upd:5 },
-    { id:'e3', subj:'econ', type:'exam',  title:'期中考',                  off:6,  time:'09:10', place:'原教室', scope:'Mankiw 第 1–7 章', weight:30, note:'含繪圖是非題', src:'老師投影片 W6', upd:1, was:13 },
-    { id:'e4', subj:'eng',  type:'hw',    title:'U2 閱讀心得',             off:8,  time:'12:00', place:'e-learning', scope:'U2 Work 閱讀', weight:5, note:'', src:'e-learning 公告', upd:3 },
-    { id:'e5', subj:'econ', type:'report',title:'小組報告：時事經濟分析',  off:13, time:'13:10', place:'課堂上台', scope:'自選一則近期新聞', weight:15, note:'每組 8 分鐘', src:'老師課堂口頭公告', upd:4 },
-    { id:'e6', subj:'acc',  type:'exam',  title:'期中考',                  off:15, time:'10:10', place:'原教室', scope:'CH1–CH4', weight:25, note:'', src:'e-learning 公告', upd:6 },
-    { id:'e7', subj:'fin',  type:'exam',  title:'期中考',                  off:16, time:'14:10', place:'原教室', scope:'Ch1–Ch6', weight:30, note:'可帶計算機', src:'老師投影片 W7', upd:6 },
-    { id:'e8', subj:'eng',  type:'quiz',  title:'U1 單字小考',             off:-3, time:'09:10', place:'教室', scope:'U1 單字', weight:5, note:'', src:'e-learning 公告', upd:10 },
-    { id:'e9', subj:'fin',  type:'hw',    title:'習題 0：預備數學',        off:-5, time:'23:59', place:'e-learning', scope:'', weight:2, note:'', src:'e-learning 公告', upd:12 }
-  ];
-
-  const NOTES = [
-    { subj:'econ', upd:1, items:['機會成本問的是「我放棄了什麼」，時間也算成本','期中考會出供需圖判斷題，價格上限、價格下限都要會畫'] },
-    { subj:'fin',  upd:3, items:['月複利的指數是「每年期數 × 年數」','計算機要會用 y^x 鍵，考試可以帶'] },
-    { subj:'acc',  upd:2, items:['淨利 ＝ 收入 − 費用，股利不是費用','小考開書，但時間很短，先劃好章節重點'] },
-    { subj:'eng',  upd:3, items:['U2 單字下週會抽考','閱讀心得需要 150 字以上'] }
-  ];
-
-  const REPORTS = [
-    { subj:'econ', title:'時事經濟分析', off:13, time:'13:10', fmt:'簡報 PPT，8 分鐘上台', submit:'上課前把檔案上傳 e-learning',
-      groups:[ { name:'第 1 組', members:[['範例同學甲','簡報'],['範例同學乙','找資料'],['範例同學丙','上台'],['範例同學丁','整合']] },
-               { name:'第 2 組', members:[['範例同學戊','簡報'],['範例同學己','找資料'],['範例同學庚','上台']] } ] }
-  ];
-
-  /* ================= 工具函式 ================= */
+  /* ================= 工具 ================= */
   const $ = (s, r=document) => r.querySelector(s);
-  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const store = {
     get(k, d){ try{ const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); }catch(e){ return d; } },
     set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
   };
   const today0 = (() => { const d = new Date(); d.setHours(0,0,0,0); return d; })();
   const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+  const parseDay = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, (m||1) - 1, d||1); };
+  const isoDay = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   const WD = ['日','一','二','三','四','五','六'];
   const fmtDate = d => `${d.getMonth()+1}/${d.getDate()}（${WD[d.getDay()]}）`;
-  const dayKey = d => `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
-
-  const events = EVENTS.map(e => {
-    const date = addDays(today0, e.off);
-    const [h, m] = e.time.split(':').map(Number);
-    return { ...e, date, days: e.off, was: e.was != null ? addDays(today0, e.was) : null, updDate: addDays(today0, -e.upd), h, m };
-  }).sort((a, b) => a.date - b.date || (a.h*60+a.m) - (b.h*60+b.m));
-
-  const urgency = e => e.days < 0 ? 'past' : e.days <= 3 ? 'hot' : e.days <= 7 ? 'warn' : 'calm';
-  const countLabel = e => e.days < 0 ? ['已過', `${-e.days} 天`] : e.days === 0 ? ['今天', '0'] : ['還剩', `${e.days}`];
+  const fmtUpd = iso => { if(!iso) return ''; const d = new Date(iso); return isNaN(d) ? '' : `${d.getMonth()+1}/${d.getDate()}`; };
+  const use = name => (window.claude && typeof window.claude.use === 'function') ? window.claude.use(name).catch(() => null) : Promise.resolve(null);
 
   /* ================= 狀態 ================= */
   const S = {
-    unlocked: store.get('unlocked', false),
+    name: store.get('name', ''),
     page: 'schedule', view: 'list',
-    subj: new Set(), type: new Set(), q: '', hideDone: false,
-    done: new Set(store.get('done', [])),
+    subj: new Set(), type: new Set(), q: '',
     calMonth: new Date(today0.getFullYear(), today0.getMonth(), 1), calDay: null
   };
+  const D = { events: [], notes: {}, reports: [], review: [], subjects: DEFAULT_SUBJECTS.slice(), loaded: false, offline: false };
+  let db = null, room = null, comments = null, canEdit = false;
+  let peers = [];
 
-  /* ================= 畫面 ================= */
-  const PAGES = [['schedule','待辦'],['notes','上課重點'],['reports','分組報告'],['submit','回報／補充']];
+  const subjects = () => D.subjects.length ? D.subjects : DEFAULT_SUBJECTS;
+  const events = () => D.events.map(e => {
+    const date = parseDay(e.date);
+    const [h, m] = String(e.time || '00:00').split(':').map(Number);
+    return { ...e, dateObj: date, days: Math.round((date - today0) / 864e5), mins: (h||0)*60 + (m||0), wasObj: e.was ? parseDay(e.was) : null };
+  }).sort((a, b) => a.dateObj - b.dateObj || a.mins - b.mins);
+  const urgency = e => e.days < 0 ? 'past' : e.days <= 3 ? 'hot' : e.days <= 7 ? 'warn' : 'calm';
 
-  function renderPages(){
-    const nav = $('#pages');
-    nav.hidden = !S.unlocked;
+  /* ================= 頁面框架 ================= */
+  const PAGES = [['schedule','時程'],['notes','上課重點'],['reports','分組報告']];
+
+  function renderChrome(){
+    const nav = $('#pages'), entered = !!S.name;
+    nav.hidden = !entered; $('#here').hidden = !entered; $('#cbar').hidden = !entered;
     nav.innerHTML = PAGES.map(([k, n]) => `<button class="pg" data-p="${k}" ${S.page === k ? 'aria-current="page"' : ''}>${n}</button>`).join('');
     nav.querySelectorAll('.pg').forEach(b => b.addEventListener('click', () => { S.page = b.dataset.p; render(); window.scrollTo(0, 0); }));
+    renderHere();
+  }
+
+  function renderHere(){
+    const box = $('#hereIn'); if(!box || !S.name) return;
+    const others = [];
+    const seen = new Set();
+    peers.forEach(p => {
+      if(p.isMe) return;
+      const n = typeof p.presence?.name === 'string' ? p.presence.name.trim().slice(0, 20) : '';
+      const key = n || p.peer;
+      if(seen.has(key)) return; seen.add(key);
+      others.push(n || '一位同學');
+    });
+    box.textContent = '';
+    const dot = document.createElement('span'); dot.className = 'dot'; box.append(dot);
+    const t = document.createElement('span');
+    const me = document.createElement('b'); me.textContent = S.name + '（你）';
+    t.append(me);
+    if(others.length){
+      const shown = others.slice(0, 6);
+      shown.forEach(n => { t.append('、'); const b = document.createElement('b'); b.textContent = n; t.append(b); });
+      t.append(others.length > 6 ? ` 等 ${others.length + 1} 人正在瀏覽` : ' 正在瀏覽');
+    } else t.append(' 正在瀏覽');
+    box.append(t);
+    const chg = document.createElement('button'); chg.className = 'me'; chg.textContent = '換名字';
+    chg.addEventListener('click', () => { S.name = ''; store.set('name', ''); if(room) room.presence({ name: null }).catch(() => {}); render(); });
+    box.append(chg);
   }
 
   function render(){
-    renderPages();
+    renderChrome();
     const app = $('#app');
-    if(!S.unlocked){ renderGate(app); return; }
-    const banner = `<div class="banner"><b>雛形示意</b>　以下日期與內容都是範例資料，用來看版面和功能，不是真的課程資訊。</div>`;
-    if(S.page === 'schedule') app.innerHTML = banner + scheduleHTML();
-    else if(S.page === 'notes') app.innerHTML = banner + notesHTML();
-    else if(S.page === 'reports') app.innerHTML = banner + reportsHTML();
-    else app.innerHTML = banner + submitHTML();
+    if(!S.name){ renderGate(app); return; }
+    if(S.page === 'schedule') app.innerHTML = scheduleHTML();
+    else if(S.page === 'notes') app.innerHTML = notesHTML();
+    else app.innerHTML = reportsHTML();
     bind();
   }
 
   function renderGate(app){
     app.innerHTML = `<div class="gate"><form class="box" id="gate">
-      <div class="kicker">財金一丙</div><h2>輸入解鎖碼</h2>
-      <p class="lede">解鎖碼由班上同學私下提供。同一台裝置輸入一次就會記住。</p>
-      <input id="code" type="text" autocomplete="off" aria-label="解鎖碼" placeholder="解鎖碼">
+      <div class="kicker">財金一丙</div><h2>輸入你的名字就能進入</h2>
+      <p class="lede">名字會顯示在頁面上方，讓大家知道誰正在看。同一台裝置之後會記住。</p>
+      <input id="nm" type="text" maxlength="20" autocomplete="nickname" aria-label="你的名字" placeholder="例如：林言樵">
       <div class="err" id="err" role="alert"></div>
       <button class="btn" type="submit">進入</button>
-      <p class="lede" style="font-size:13px">雛形示範用的解鎖碼：<span class="mono">demo</span></p>
     </form></div>`;
     $('#gate').addEventListener('submit', ev => {
       ev.preventDefault();
-      if($('#code').value.trim() === CONFIG.code){ S.unlocked = true; store.set('unlocked', true); render(); }
-      else $('#err').textContent = '解鎖碼不對，請再確認一次。';
+      const n = $('#nm').value.trim().slice(0, 20);
+      if(!n){ $('#err').textContent = '請先輸入名字。'; return; }
+      S.name = n; store.set('name', n);
+      if(room) room.presence({ name: n }).catch(() => {});
+      render();
     });
   }
 
-  /* ---- 待辦 ---- */
+  /* ================= 時程 ================= */
   function filtered(){
     const q = S.q.trim().toLowerCase();
-    return events.filter(e =>
+    return events().filter(e =>
       (!S.subj.size || S.subj.has(e.subj)) && (!S.type.size || S.type.has(e.type)) &&
-      (!S.hideDone || !S.done.has(e.id)) &&
-      (!q || [e.title, e.scope, e.note, e.place, SUBJECTS[e.subj]].join(' ').toLowerCase().includes(q)));
+      (!q || [e.title, e.scope, e.note, e.place, e.subj].join(' ').toLowerCase().includes(q)));
   }
 
   function itemHTML(e){
-    const u = urgency(e), [lab, num] = countLabel(e), isDone = S.done.has(e.id);
-    const chg = e.was ? `<span class="tag chg">已更動</span>` : '';
-    const was = e.was ? `<div class="more">原定 <s>${fmtDate(e.was)}</s>，已改為 ${fmtDate(e.date)}</div>` : '';
-    return `<li class="item ${u} ${isDone ? 'done' : ''}">
-      <div class="count"><small>${lab}</small><b>${num}</b>${e.days > 0 ? '<small>天</small>' : ''}</div>
+    const u = urgency(e);
+    const lab = e.days < 0 ? '已過' : e.days === 0 ? '今天' : '還剩';
+    const num = e.days < 0 ? -e.days : e.days;
+    const unit = e.days === 0 ? '' : '<small>天</small>';
+    const was = e.wasObj ? `<div class="more">原定 <s>${fmtDate(e.wasObj)}</s>，已改為 ${fmtDate(e.dateObj)}</div>` : '';
+    return `<li class="item ${u}" id="ev-${esc(e.id)}" data-comment-target>
+      <div class="count"><small>${lab}</small><b>${num}</b>${unit}</div>
       <div class="main">
-        <div class="tags"><span class="tag type">${TYPES[e.type]}</span><span class="tag">${SUBJECTS[e.subj]}</span>${chg}</div>
+        <div class="tags"><span class="tag type">${TYPES[e.type] || '其他'}</span><span class="tag">${esc(e.subj)}</span>${e.wasObj ? '<span class="tag chg">已更動</span>' : ''}</div>
         <h4>${esc(e.title)}</h4>
-        <div class="meta"><span class="mono">${fmtDate(e.date)} ${e.time}</span><span>${esc(e.place)}</span></div>
-        ${e.scope ? `<div class="meta"><span>範圍：${esc(e.scope)}</span>${e.weight ? `<span>占 ${e.weight}%</span>` : ''}</div>` : ''}
+        <div class="meta"><span class="mono">${fmtDate(e.dateObj)} ${esc(e.time || '')}</span>${e.place ? `<span>${esc(e.place)}</span>` : ''}</div>
+        ${(e.scope || e.weight) ? `<div class="meta">${e.scope ? `<span>範圍：${esc(e.scope)}</span>` : ''}${e.weight ? `<span>占 ${esc(e.weight)}%</span>` : ''}</div>` : ''}
         ${e.note ? `<div class="meta"><span>備註：${esc(e.note)}</span></div>` : ''}
         ${was}
-        <div class="src">來源：${esc(e.src)}　最後更新 ${e.updDate.getMonth()+1}/${e.updDate.getDate()}</div>
+        <div class="src">來源：${esc(e.src || '未註明')}${e.updatedAt ? `　最後更新 ${fmtUpd(e.updatedAt)}` : ''}</div>
+        <div class="acts">
+          <button class="mini" data-contrib="ev-${esc(e.id)}" data-label="${esc(e.subj + '｜' + e.title)}">補充／回報這筆</button>
+          ${canEdit ? `<button class="mini ghost" data-edit-ev="${esc(e.id)}">編輯</button>` : ''}
+        </div>
       </div>
-      <button class="ck" data-id="${e.id}" aria-pressed="${isDone}" aria-label="標記「${esc(e.title)}」已完成">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 4.5"/></svg>
-      </button>
     </li>`;
   }
 
@@ -338,10 +391,10 @@
     const m = S.calMonth, first = new Date(m.getFullYear(), m.getMonth(), 1);
     const start = addDays(first, -first.getDay());
     const byDay = {};
-    list.forEach(e => (byDay[dayKey(e.date)] ||= []).push(e));
+    list.forEach(e => (byDay[isoDay(e.dateObj)] ||= []).push(e));
     let cells = WD.map(w => `<div class="dow">${w}</div>`).join('');
     for(let i = 0; i < 42; i++){
-      const d = addDays(start, i), k = dayKey(d), arr = byDay[k] || [];
+      const d = addDays(start, i), k = isoDay(d), arr = byDay[k] || [];
       const dots = arr.map(e => `<i class="${urgency(e) === 'hot' ? 'hot' : urgency(e) === 'warn' ? 'warn' : ''}"></i>`).join('');
       cells += `<button class="day ${d.getMonth() !== m.getMonth() ? 'out' : ''} ${d.getTime() === today0.getTime() ? 'today' : ''}" data-k="${k}" aria-pressed="${S.calDay === k}" aria-label="${fmtDate(d)}，${arr.length} 件"><span class="dn">${d.getDate()}</span><span class="dots">${dots}</span></button>`;
     }
@@ -352,92 +405,302 @@
       ${S.calDay ? `<section class="group"><div class="ghead"><h3>這一天</h3><span>${sel.length} 件</span></div>${sel.length ? `<ul>${sel.map(itemHTML).join('')}</ul>` : '<p class="empty">這天沒有事項。</p>'}</section>` : '<p class="empty">點日期可以看當天的事項。</p>'}`;
   }
 
+  function adminBar(what){
+    if(!canEdit) return '';
+    const btn = what === 'ev' ? '<button class="mini" id="addEv">＋ 新增事項</button>'
+              : what === 'rep' ? '<button class="mini" id="addRep">＋ 新增報告</button>'
+              : '<button class="mini" id="editSubj">管理科目</button>';
+    const rv = D.review.length ? `<button class="mini" id="openReview" style="border-color:var(--hot);color:var(--hot)">待你決定 ${D.review.length} 件</button>` : '';
+    return `<div class="admin"><b>管理者</b><span>只有你看得到這一列。</span>${btn}${rv}</div>`;
+  }
+
+  function openReview(){
+    openSheet(`<button class="x" data-close>關閉</button><h3>待你決定</h3>
+      <p class="lede">每晚整理時，Claude 判斷不了或有爭議的投稿會放在這裡。決定後到該筆按「編輯」修改，或請 Claude 處理。</p>
+      <ul class="steps">${D.review.map(r => `<li><span><b>${esc(r.summary || '')}</b><br><span class="src">${esc(r.reason || '')}${r.at ? '　' + esc(r.at) : ''}</span></span></li>`).join('')}</ul>
+      <div class="msg" id="rvmsg" hidden></div>
+      <div class="btns"><button class="btn" id="clearReview">都處理完了，清除</button></div>`);
+    $('#clearReview').addEventListener('click', () => save(() => db.doc('site/review').set({ items: [], updatedAt: new Date().toISOString() }), 'rvmsg'));
+  }
+
+  function emptyBox(title, body){
+    return `<div class="emptybox"><b>${title}</b><p>${body}</p></div>`;
+  }
+
   function scheduleHTML(){
-    const upcoming = events.filter(e => e.days >= 0 && !S.done.has(e.id));
-    const in7 = upcoming.filter(e => e.days <= 7).length, in3 = upcoming.filter(e => e.days <= 3).length;
+    const all = events();
+    const upcoming = all.filter(e => e.days >= 0);
+    const in3 = upcoming.filter(e => e.days <= 3).length, in7 = upcoming.filter(e => e.days <= 7).length;
+    const head = `<div class="kicker">${today0.getFullYear()}/${today0.getMonth()+1}/${today0.getDate()}（${WD[today0.getDay()]}）</div>
+      <h2 id="pageHead" data-comment-target>這週要交什麼、考什麼</h2>
+      <p class="lede">考試、作業、小考、報告，依剩餘天數排序。3 天內是紅色，7 天內是黃色。</p>${adminBar('ev')}`;
+    if(!D.loaded) return head + `<p class="empty">${D.offline ? '這個畫面現在讀不到資料。請從 claude.ai 的連結打開。' : '正在讀取…'}</p>`;
+    if(!all.length) return head + emptyBox('還沒有任何事項', canEdit ? '按上面的「新增事項」加入第一筆，或把老師的公告貼給 Claude，請它幫你整理進來。' : '老師公告後會整理到這裡。你知道什麼消息，按下方的「補充／回報」告訴大家。');
     const list = filtered();
-    const subjChips = Object.entries(SUBJECTS).map(([k, n]) => `<button class="chip" data-f="subj" data-v="${k}" aria-pressed="${S.subj.has(k)}">${n}</button>`).join('');
+    const subjChips = subjects().map(n => `<button class="chip" data-f="subj" data-v="${esc(n)}" aria-pressed="${S.subj.has(n)}">${esc(n)}</button>`).join('');
     const typeChips = Object.entries(TYPES).map(([k, n]) => `<button class="chip" data-f="type" data-v="${k}" aria-pressed="${S.type.has(k)}">${n}</button>`).join('');
-    return `<div class="kicker">${today0.getFullYear()}/${today0.getMonth()+1}/${today0.getDate()}（${WD[today0.getDay()]}）</div>
-      <h2>這週要交什麼、考什麼</h2>
-      <p class="lede">依剩餘天數排序。勾選已完成，只會記在你自己的手機上。</p>
-      <div class="sum"><div class="hotn"><b>${in3}</b><span>3 天內到期</span></div><div><b>${in7}</b><span>7 天內到期</span></div><div><b>${upcoming.length}</b><span>未完成的待辦</span></div></div>
+    return head + `
+      <div class="sum"><div class="hotn"><b>${in3}</b><span>3 天內到期</span></div><div><b>${in7}</b><span>7 天內到期</span></div><div><b>${upcoming.length}</b><span>還沒到期</span></div></div>
       <div class="tools">
         <div class="row"><div class="seg" role="group" aria-label="檢視方式"><button data-view="list" aria-pressed="${S.view === 'list'}">倒數清單</button><button data-view="cal" aria-pressed="${S.view === 'cal'}">月曆</button></div>
           <input class="search" id="q" type="search" placeholder="搜尋標題、範圍、備註" value="${esc(S.q)}" aria-label="搜尋"></div>
         <div class="row" aria-label="科目篩選">${subjChips}</div>
-        <div class="row" aria-label="類型篩選">${typeChips}<label class="tgl"><input type="checkbox" id="hd" ${S.hideDone ? 'checked' : ''}>隱藏已完成</label></div>
+        <div class="row" aria-label="類型篩選">${typeChips}</div>
       </div>
       ${S.view === 'list' ? listHTML(list) : calHTML(list)}`;
   }
 
-  /* ---- 上課重點 ---- */
+  /* ================= 上課重點 ================= */
   function notesHTML(){
-    return `<div class="kicker">NOTES</div><h2>老師上課重點</h2>
-      <p class="lede">每科最近一次的重點。同學補充的內容會先審核，通過後才會出現在這裡。</p>
-      <div class="notes">${NOTES.map(n => {
-        const d = addDays(today0, -n.upd);
-        return `<article class="note"><h3>${SUBJECTS[n.subj]}</h3><ul>${n.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul><div class="stamp">最後更新 ${d.getMonth()+1}/${d.getDate()}　來源：課堂紀錄</div></article>`;
-      }).join('')}</div>`;
+    const head = `<div class="kicker">NOTES</div><h2 id="pageHead" data-comment-target>老師上課重點</h2>
+      <p class="lede">每科最近的上課重點。這裡只有管理者能改；你有補充就按該科的「補充這科」，審核通過後會加進來。</p>${adminBar('notes')}`;
+    if(!D.loaded) return head + `<p class="empty">${D.offline ? '這個畫面現在讀不到資料。請從 claude.ai 的連結打開。' : '正在讀取…'}</p>`;
+    return head + `<div class="notes">${subjects().map((s, i) => {
+      const n = D.notes[s] || {};
+      const items = Array.isArray(n.items) ? n.items : [];
+      return `<article class="note" id="note-${i}" data-comment-target><h3>${esc(s)}</h3><div class="body">
+        ${items.length ? `<ul>${items.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : '<p class="none">還沒有整理重點。</p>'}
+        ${items.length ? `<div class="src">來源：${esc(n.src || '課堂紀錄')}${n.updatedAt ? `　最後更新 ${fmtUpd(n.updatedAt)}` : ''}</div>` : ''}
+        <div class="acts"><button class="mini" data-contrib="note-${i}" data-label="${esc(s + '｜上課重點')}">補充這科</button>${canEdit ? `<button class="mini ghost" data-edit-note="${esc(s)}">編輯</button>` : ''}</div>
+      </div></article>`;
+    }).join('')}</div>`;
   }
 
-  /* ---- 分組報告 ---- */
+  /* ================= 分組報告 ================= */
   function reportsHTML(){
-    return `<div class="kicker">GROUP REPORTS</div><h2>分組報告</h2>
-      <p class="lede">每份報告的分組、分工和繳交方式放在這裡。</p>
-      ${REPORTS.map(r => {
-        const d = addDays(today0, r.off);
-        return `<article class="rep"><div class="tags"><span class="tag type">報告</span><span class="tag">${SUBJECTS[r.subj]}</span></div>
-          <h3>${esc(r.title)}</h3>
-          <dl><dt>時間</dt><dd class="mono">${fmtDate(d)} ${r.time}</dd><dt>形式</dt><dd>${esc(r.fmt)}</dd><dt>繳交</dt><dd>${esc(r.submit)}</dd></dl>
-          ${r.groups.map(g => `<div><b>${g.name}</b><div class="members" style="margin-top:6px">${g.members.map(([n, role]) => `<span>${esc(n)}<b>${esc(role)}</b></span>`).join('')}</div></div>`).join('')}
-        </article>`;
-      }).join('')}`;
+    const head = `<div class="kicker">GROUP REPORTS</div><h2 id="pageHead" data-comment-target>分組報告</h2>
+      <p class="lede">每份報告的分組、分工和繳交方式。</p>${adminBar('rep')}`;
+    if(!D.loaded) return head + `<p class="empty">${D.offline ? '這個畫面現在讀不到資料。請從 claude.ai 的連結打開。' : '正在讀取…'}</p>`;
+    if(!D.reports.length) return head + emptyBox('還沒有分組報告', canEdit ? '按上面的「新增報告」加入，或把分組名單貼給 Claude 整理。' : '有分組消息時，按下方的「補充／回報」告訴大家。');
+    const reps = D.reports.slice().sort((a, b) => String(a.date).localeCompare(String(b.date)));
+    return head + reps.map(r => {
+      const d = parseDay(r.date);
+      const groups = Array.isArray(r.groups) ? r.groups : [];
+      return `<article class="rep" id="rep-${esc(r.id)}" data-comment-target><div class="tags"><span class="tag type">報告</span><span class="tag">${esc(r.subj)}</span></div>
+        <h3>${esc(r.title)}</h3>
+        <dl><dt>時間</dt><dd class="mono">${r.date ? fmtDate(d) : '未定'} ${esc(r.time || '')}</dd>${r.fmt ? `<dt>形式</dt><dd>${esc(r.fmt)}</dd>` : ''}${r.submit ? `<dt>繳交</dt><dd>${esc(r.submit)}</dd>` : ''}</dl>
+        ${groups.map(g => `<div><b>${esc(g.name)}</b><div class="members">${(g.members || []).map(m => `<span>${esc(m.n)}${m.role ? `<b>${esc(m.role)}</b>` : ''}</span>`).join('')}</div></div>`).join('')}
+        ${r.updatedAt ? `<div class="src">最後更新 ${fmtUpd(r.updatedAt)}</div>` : ''}
+        <div class="acts"><button class="mini" data-contrib="rep-${esc(r.id)}" data-label="${esc(r.subj + '｜' + r.title)}">補充／回報這份</button>${canEdit ? `<button class="mini ghost" data-edit-rep="${esc(r.id)}">編輯</button>` : ''}</div>
+      </article>`;
+    }).join('');
   }
 
-  /* ---- 回報／補充 ---- */
-  function submitHTML(){
-    const opts = events.filter(e => e.days >= 0).map(e => `<option value="${e.id}">${SUBJECTS[e.subj]}｜${esc(e.title)}（${fmtDate(e.date)}）</option>`).join('');
-    return `<div class="kicker">FEEDBACK</div><h2>回報錯誤或補充</h2>
-      <p class="lede">日期或內容有誤，或有上課重點想補充，在這裡寫。內容會先進審核區，每晚固定時間審核，有爭議的交給管理者決定。</p>
+  /* ================= 補充／回報 ================= */
+  async function contribute(targetId){
+    const el = targetId ? document.getElementById(targetId) : $('#pageHead');
+    if(comments && el){
+      try{
+        const r = await comments.openComposer({ element: el });
+        if(r && r.opened) return;
+      }catch(e){ /* 落到下面的說明 */ }
+    }
+    openSheet(`<button class="x" data-close>關閉</button>
+      <h3>補充或回報，三步就好</h3>
+      <ol class="steps">
+        <li><span>點畫面上方 claude.ai 工具列的<b>留言</b>圖示。</span></li>
+        <li><span>點你要補充的那一格（某筆事項、某一科），寫下內容。</span></li>
+        <li><span>送出。${REVIEW_TIME}整理，沒問題就更新到網站上。</span></li>
+      </ol>
+      <p class="lede">寫的時候盡量附上來源，例如「老師今天課堂說的」或「e-learning 公告」，比較快通過。</p>
+      <div class="btns"><button class="btn" data-close>知道了</button></div>`);
+  }
+
+  /* ================= 管理者編輯 ================= */
+  function openSheet(html){
+    const root = $('#sheetRoot');
+    root.innerHTML = `<div class="scrim" id="scrim"><div class="sheet" role="dialog" aria-modal="true">${html}</div></div>`;
+    root.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeSheet));
+    $('#scrim').addEventListener('click', ev => { if(ev.target.id === 'scrim') closeSheet(); });
+    const f = root.querySelector('input,select,textarea,button'); if(f) f.focus();
+  }
+  function closeSheet(){ $('#sheetRoot').innerHTML = ''; }
+  const subjOptions = cur => subjects().map(s => `<option ${s === cur ? 'selected' : ''}>${esc(s)}</option>`).join('');
+  function showMsg(id, text, ok){ const m = document.getElementById(id); if(!m) return; m.hidden = false; m.className = 'msg ' + (ok ? 'ok' : 'bad'); m.textContent = text; }
+  async function save(fn, msgId){
+    try{ await fn(); closeSheet(); }
+    catch(e){
+      const code = e && e.code;
+      showMsg(msgId, code === 'invalid_argument' ? '沒有權限修改，或資料格式不對。' : code === 'quota_exceeded' ? '資料庫已滿，請先刪掉一些舊資料。' : '儲存失敗，請稍後再試一次。', false);
+    }
+  }
+
+  function editEvent(id){
+    const e = id ? D.events.find(x => x.id === id) : null;
+    const v = e || { subj: subjects()[0], type: 'hw', title: '', date: isoDay(addDays(today0, 7)), time: '23:59', place: '', scope: '', weight: '', note: '', src: '' };
+    openSheet(`<button class="x" data-close>關閉</button><h3>${e ? '編輯事項' : '新增事項'}</h3>
+      <form class="form" id="evf">
+        <div class="two"><label for="f-subj">科目<select id="f-subj">${subjOptions(v.subj)}</select></label>
+          <label for="f-type">類型<select id="f-type">${Object.entries(TYPES).map(([k, n]) => `<option value="${k}" ${k === v.type ? 'selected' : ''}>${n}</option>`).join('')}</select></label></div>
+        <label for="f-title">標題<input id="f-title" required value="${esc(v.title)}" placeholder="例如：第 3 章 小考"></label>
+        <div class="two"><label for="f-date">日期<input id="f-date" type="date" required value="${esc(v.date)}"></label>
+          <label for="f-time">時間<input id="f-time" type="time" value="${esc(v.time)}"></label></div>
+        <label for="f-place">地點／繳交方式<input id="f-place" value="${esc(v.place)}" placeholder="例如：e-learning 上傳 PDF"></label>
+        <div class="two"><label for="f-scope">範圍<input id="f-scope" value="${esc(v.scope)}"></label>
+          <label for="f-weight">占成績 %<input id="f-weight" type="number" min="0" max="100" value="${esc(v.weight)}"></label></div>
+        <label for="f-note">備註<input id="f-note" value="${esc(v.note)}"></label>
+        <label for="f-src">資料來源<input id="f-src" value="${esc(v.src)}" placeholder="例如：e-learning 公告、老師課堂口頭公告"></label>
+        ${e ? `<label class="ck" for="f-chg"><input id="f-chg" type="checkbox" ${e.was ? 'checked' : ''}>標示「已更動」<span class="hint">改日期時會自動勾選，並保留原定日期</span></label>` : ''}
+        <div class="msg" id="evmsg" hidden></div>
+        <div class="btns"><button class="btn" type="submit">儲存</button>${e ? '<button class="btn ghost" type="button" id="delEv">刪除</button>' : ''}</div>
+      </form>`);
+    const dateIn = $('#f-date'), chg = $('#f-chg');
+    if(e && chg) dateIn.addEventListener('change', () => { if(dateIn.value !== e.date) chg.checked = true; });
+    $('#evf').addEventListener('submit', ev => {
+      ev.preventDefault();
+      const date = dateIn.value, title = $('#f-title').value.trim();
+      if(!title || !date){ showMsg('evmsg', '標題和日期一定要填。', false); return; }
+      let was = null;
+      if(e && chg && chg.checked) was = e.was || (e.date !== date ? e.date : null);
+      const w = $('#f-weight').value;
+      const body = { subj: $('#f-subj').value, type: $('#f-type').value, title, date, time: $('#f-time').value,
+        place: $('#f-place').value.trim(), scope: $('#f-scope').value.trim(), weight: w === '' ? null : Number(w),
+        note: $('#f-note').value.trim(), src: $('#f-src').value.trim(), was, updatedAt: new Date().toISOString() };
+      save(() => (e ? db.collection('events').doc(e.id) : db.collection('events').doc()).set(body), 'evmsg');
+    });
+    const del = $('#delEv');
+    if(del) del.addEventListener('click', () => {
+      if(del.dataset.armed){ save(() => db.collection('events').doc(e.id).delete(), 'evmsg'); return; }
+      del.dataset.armed = '1'; del.className = 'btn danger'; del.textContent = '再按一次確定刪除';
+    });
+  }
+
+  function editNote(subj){
+    const n = D.notes[subj] || {};
+    openSheet(`<button class="x" data-close>關閉</button><h3>編輯重點：${esc(subj)}</h3>
+      <form class="form" id="nf">
+        <label for="n-items">重點<span class="hint">一行一點</span><textarea id="n-items">${esc((n.items || []).join('\n'))}</textarea></label>
+        <label for="n-src">資料來源<input id="n-src" value="${esc(n.src || '')}" placeholder="例如：第 6 週課堂"></label>
+        <div class="msg" id="nmsg" hidden></div>
+        <div class="btns"><button class="btn" type="submit">儲存</button></div>
+      </form>`);
+    $('#nf').addEventListener('submit', ev => {
+      ev.preventDefault();
+      const items = $('#n-items').value.split('\n').map(s => s.trim()).filter(Boolean);
+      const next = { ...D.notes, [subj]: { items, src: $('#n-src').value.trim(), updatedAt: new Date().toISOString() } };
+      save(() => db.doc('site/notes').set({ bySubj: next }), 'nmsg');
+    });
+  }
+
+  function editSubjects(){
+    openSheet(`<button class="x" data-close>關閉</button><h3>管理科目</h3>
       <form class="form" id="sf">
-        <label for="st">類型<select id="st"><option>回報有誤</option><option>補充事項</option><option>補充上課重點</option></select></label>
-        <label for="se">相關事項（可不選）<select id="se"><option value="">不指定</option>${opts}</select></label>
-        <label for="sc">內容<textarea id="sc" placeholder="例如：會計小考改到下週三，老師今天下課前說的"></textarea></label>
-        <label for="ss">資料來源<input id="ss" type="text" placeholder="例如：老師課堂口頭公告、e-learning 公告"></label>
-        <button class="btn" type="submit">送出</button>
-        <div class="toast" id="tt" hidden></div>
-      </form>`;
+        <label for="s-list">科目<span class="hint">一行一科，順序就是顯示順序</span><textarea id="s-list">${esc(subjects().join('\n'))}</textarea></label>
+        <div class="msg" id="smsg" hidden></div>
+        <div class="btns"><button class="btn" type="submit">儲存</button></div>
+      </form>`);
+    $('#sf').addEventListener('submit', ev => {
+      ev.preventDefault();
+      const list = [...new Set($('#s-list').value.split('\n').map(s => s.trim()).filter(Boolean))];
+      if(!list.length){ showMsg('smsg', '至少要有一科。', false); return; }
+      save(() => db.doc('site/config').set({ subjects: list }), 'smsg');
+    });
   }
 
-  /* ================= 事件 ================= */
+  const groupsToText = gs => (gs || []).map(g => `${g.name}：${(g.members || []).map(m => m.role ? `${m.n}（${m.role}）` : m.n).join('、')}`).join('\n');
+  const textToGroups = t => t.split('\n').map(l => l.trim()).filter(Boolean).map(l => {
+    const i = l.search(/[：:]/);
+    const name = i >= 0 ? l.slice(0, i).trim() : l;
+    const rest = i >= 0 ? l.slice(i + 1) : '';
+    const members = rest.split(/[、,，]/).map(s => s.trim()).filter(Boolean).map(s => {
+      const m = s.match(/^(.*?)[（(](.*?)[）)]$/);
+      return m ? { n: m[1].trim(), role: m[2].trim() } : { n: s, role: '' };
+    });
+    return { name, members };
+  });
+
+  function editReport(id){
+    const r = id ? D.reports.find(x => x.id === id) : null;
+    const v = r || { subj: subjects()[0], title: '', date: isoDay(addDays(today0, 14)), time: '', fmt: '', submit: '', groups: [] };
+    openSheet(`<button class="x" data-close>關閉</button><h3>${r ? '編輯報告' : '新增報告'}</h3>
+      <form class="form" id="rf">
+        <label for="r-subj">科目<select id="r-subj">${subjOptions(v.subj)}</select></label>
+        <label for="r-title">報告名稱<input id="r-title" required value="${esc(v.title)}"></label>
+        <div class="two"><label for="r-date">日期<input id="r-date" type="date" value="${esc(v.date)}"></label>
+          <label for="r-time">時間<input id="r-time" type="time" value="${esc(v.time)}"></label></div>
+        <label for="r-fmt">形式<input id="r-fmt" value="${esc(v.fmt)}" placeholder="例如：簡報 8 分鐘"></label>
+        <label for="r-sub">繳交方式<input id="r-sub" value="${esc(v.submit)}"></label>
+        <label for="r-groups">分組與分工<span class="hint">一行一組，格式：第 1 組：王小明（簡報）、李小華（上台）</span><textarea id="r-groups">${esc(groupsToText(v.groups))}</textarea></label>
+        <div class="msg" id="rmsg" hidden></div>
+        <div class="btns"><button class="btn" type="submit">儲存</button>${r ? '<button class="btn ghost" type="button" id="delRep">刪除</button>' : ''}</div>
+      </form>`);
+    $('#rf').addEventListener('submit', ev => {
+      ev.preventDefault();
+      const title = $('#r-title').value.trim();
+      if(!title){ showMsg('rmsg', '報告名稱一定要填。', false); return; }
+      const body = { subj: $('#r-subj').value, title, date: $('#r-date').value, time: $('#r-time').value,
+        fmt: $('#r-fmt').value.trim(), submit: $('#r-sub').value.trim(), groups: textToGroups($('#r-groups').value), updatedAt: new Date().toISOString() };
+      save(() => (r ? db.collection('reports').doc(r.id) : db.collection('reports').doc()).set(body), 'rmsg');
+    });
+    const del = $('#delRep');
+    if(del) del.addEventListener('click', () => {
+      if(del.dataset.armed){ save(() => db.collection('reports').doc(r.id).delete(), 'rmsg'); return; }
+      del.dataset.armed = '1'; del.className = 'btn danger'; del.textContent = '再按一次確定刪除';
+    });
+  }
+
+  /* ================= 事件綁定 ================= */
   function bind(){
     document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => { S.view = b.dataset.view; render(); }));
     document.querySelectorAll('[data-f]').forEach(b => b.addEventListener('click', () => {
       const set = S[b.dataset.f], v = b.dataset.v; set.has(v) ? set.delete(v) : set.add(v); render();
     }));
     const q = $('#q');
-    if(q) q.addEventListener('input', () => { S.q = q.value; const pos = q.selectionStart; render(); const n = $('#q'); n.focus(); n.setSelectionRange(pos, pos); });
-    const hd = $('#hd'); if(hd) hd.addEventListener('change', () => { S.hideDone = hd.checked; render(); });
-    document.querySelectorAll('.ck').forEach(b => b.addEventListener('click', () => {
-      const id = b.dataset.id; S.done.has(id) ? S.done.delete(id) : S.done.add(id);
-      store.set('done', [...S.done]); render();
-    }));
+    if(q) q.addEventListener('input', () => { S.q = q.value; const pos = q.selectionStart; render(); const n = $('#q'); if(n){ n.focus(); n.setSelectionRange(pos, pos); } });
     document.querySelectorAll('.day').forEach(b => b.addEventListener('click', () => { S.calDay = S.calDay === b.dataset.k ? null : b.dataset.k; render(); }));
     const p = $('#prev'), n = $('#next');
     if(p) p.addEventListener('click', () => { S.calMonth = new Date(S.calMonth.getFullYear(), S.calMonth.getMonth() - 1, 1); S.calDay = null; render(); });
     if(n) n.addEventListener('click', () => { S.calMonth = new Date(S.calMonth.getFullYear(), S.calMonth.getMonth() + 1, 1); S.calDay = null; render(); });
-    const sf = $('#sf');
-    if(sf) sf.addEventListener('submit', ev => {
-      ev.preventDefault();
-      const c = $('#sc').value.trim(), t = $('#tt');
-      t.hidden = false;
-      if(!c){ t.style.background = 'var(--hot-bg)'; t.style.color = 'var(--hot)'; t.textContent = '請先寫下內容。'; return; }
-      t.style.background = ''; t.style.color = '';
-      t.textContent = '雛形階段：投稿還沒有真的送出。正式版會進入審核區，每晚審核後更新。';
-      $('#sc').value = ''; $('#ss').value = '';
-    });
+    document.querySelectorAll('[data-contrib]').forEach(b => b.addEventListener('click', () => contribute(b.dataset.contrib)));
+    document.querySelectorAll('[data-edit-ev]').forEach(b => b.addEventListener('click', () => editEvent(b.dataset.editEv)));
+    document.querySelectorAll('[data-edit-note]').forEach(b => b.addEventListener('click', () => editNote(b.dataset.editNote)));
+    document.querySelectorAll('[data-edit-rep]').forEach(b => b.addEventListener('click', () => editReport(b.dataset.editRep)));
+    const a1 = $('#addEv'); if(a1) a1.addEventListener('click', () => editEvent(null));
+    const a2 = $('#addRep'); if(a2) a2.addEventListener('click', () => editReport(null));
+    const a3 = $('#editSubj'); if(a3) a3.addEventListener('click', editSubjects);
+    const a4 = $('#openReview'); if(a4) a4.addEventListener('click', openReview);
   }
+  $('#cbtn').addEventListener('click', () => contribute(null));
+  document.addEventListener('keydown', ev => { if(ev.key === 'Escape' && $('#scrim')) closeSheet(); });
 
+  /* ================= 啟動 ================= */
   render();
+
+  (async () => {
+    db = await use('db');
+    if(!db){ D.offline = true; render(); }
+    else {
+      let got = 0;
+      const ready = () => { if(++got >= 3){ D.loaded = true; } render(); };
+      let r1 = false, r2 = false, r3 = false;
+      db.collection('events').onSnapshot(s => { D.events = s.docs.map(d => ({ id: d.id, ...d.data() })); if(!r1){ r1 = true; ready(); } else render(); }, () => { D.offline = true; render(); });
+      db.collection('reports').onSnapshot(s => { D.reports = s.docs.map(d => ({ id: d.id, ...d.data() })); if(!r2){ r2 = true; ready(); } else render(); }, () => {});
+      db.collection('site').onSnapshot(s => {
+        s.docs.forEach(d => {
+          const v = d.data() || {};
+          if(d.id === 'notes') D.notes = v.bySubj || {};
+          if(d.id === 'review') D.review = Array.isArray(v.items) ? v.items : [];
+          if(d.id === 'config' && Array.isArray(v.subjects) && v.subjects.length) D.subjects = v.subjects;
+        });
+        if(!r3){ r3 = true; ready(); } else render();
+      }, () => {});
+    }
+  })();
+
+  (async () => {
+    const user = await use('user');
+    canEdit = user ? await user.canEdit() : false;
+    if(canEdit) render();
+  })();
+
+  (async () => {
+    comments = await use('comments');
+  })();
+
+  (async () => {
+    room = await use('room');
+    if(!room) return;
+    if(S.name) room.presence({ name: S.name }).catch(() => {});
+    room.onPeers(ch => { peers = ch.peers.filter(p => p.kind === 'viewer'); renderHere(); }, () => { peers = []; renderHere(); });
+  })();
 </script>
