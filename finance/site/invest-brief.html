@@ -174,6 +174,7 @@
   .msg.err{color:var(--up)}
   .ask{display:flex;gap:8px;align-items:flex-end}
   .ask textarea{min-height:48px;max-height:160px}
+  .ask .btn{white-space:nowrap;flex:none}
   .suggest{display:flex;flex-wrap:wrap;gap:6px}
   .suggest button{padding:7px 12px;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);text-align:left}
   .note-sm{font-size:12px;color:var(--muted);margin:0}
@@ -486,7 +487,7 @@
     renderIntraday(p);
     if (arr(b.summary).length){
       p.append(el('div', {class:'card hero'}, [ el('h2', {class:'lbl', text:'今日摘要'}),
-        el('ul', {class:'summary'}, b.summary.map(function(s, i){ return el('li', null, [ el('span', {class:'n', text:String(i+1).padStart(2,'0')}), el('span', {text:str(s)}) ]); })) ]));
+        el('ul', {class:'summary'}, (S.isOwner ? b.summary : b.summary.slice(1)).map(function(s, i){ return el('li', null, [ el('span', {class:'n', text:String(i+1).padStart(2,'0')}), el('span', {text:str(s)}) ]); })) ]));
     }
     if (b.outlook && (b.outlook.short || b.outlook.mid)){
       p.append(el('div', {class:'card'}, [ el('h2', {class:'lbl', text:'大盤展望'}),
@@ -557,7 +558,7 @@
     if (arr(b.risks).length){
       p.append(el('div', {class:'card'}, [ el('h2', {class:'lbl', text:'風險提醒'}), el('div', {class:'stack'}, b.risks.map(function(r){ return el('p', {class:'caveat', text:str(r)}); })) ]));
     }
-    if (arr(b.todos).length){
+    if (arr(b.todos).length && S.isOwner){
       var key = b.date, done = S.todoDone[key] || {};
       p.append(el('div', {class:'card'}, [ el('h2', {class:'lbl', text:'今天要盯的事'}),
         el('div', {class:'stack'}, b.todos.map(function(t, i){
@@ -761,7 +762,7 @@
       var kids = [ el('h2', {class:'lbl', text:'今日一課 · ' + str(cur.date).slice(5)}), el('h3', {class:'t', text:str(L.title)}) ];
       if (L.concept) kids.push(el('p', {class:'concept', text:str(L.concept)}));
       if (L.whyToday) kids.push(el('div', {class:'callout plain'}, [ el('b', {text:'為什麼今天講這個 '}), str(L.whyToday) ]));
-      if (L.example) kids.push(el('div', {class:'callout plain'}, [ el('b', {text:'用你的持股舉例 '}), str(L.example) ]));
+      if (L.example && S.isOwner) kids.push(el('div', {class:'callout plain'}, [ el('b', {text:'用你的持股舉例 '}), str(L.example) ]));
       if (L.takeaway) kids.push(el('div', {class:'callout gold'}, [ el('b', {text:'一句話記住 '}), str(L.takeaway) ]));
       p.append(el('div', {class:'card hero lesson'}, kids));
       var Q = L.quiz;
