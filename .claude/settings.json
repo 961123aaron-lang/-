@@ -17,9 +17,19 @@
         "source": "github",
         "repo": "0xNyk/council-of-high-intelligence"
       }
+    },
+    "claude-for-financial-services": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/financial-services-plugins"
+      }
     }
   },
   "enabledPlugins": {
-    "council@council-of-high-intelligence": true
+    "council@council-of-high-intelligence": true,
+    "financial-analysis@claude-for-financial-services": true,
+    "equity-research@claude-for-financial-services": true,
+    "market-researcher@claude-for-financial-services": true,
+    "earnings-reviewer@claude-for-financial-services": true
   }
 }
