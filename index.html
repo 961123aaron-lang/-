@@ -166,6 +166,59 @@
   .members span{font-size:13px;border:1px solid var(--line);border-radius:999px;padding:1px 10px;background:var(--paper);}
   .members b{font-weight:700;margin-left:4px;color:var(--mute);font-size:12px;}
 
+  .tag.tent{border-style:dashed;color:var(--mute);}
+  .pg.ext{text-decoration:none;border-color:var(--line);}
+
+  /* today's classes */
+  .todaybox{margin-top:18px;border:1.5px solid var(--ink);border-radius:12px;background:var(--card);padding:12px 14px;}
+  .todaybox .th{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;padding-bottom:6px;border-bottom:1px solid var(--line);}
+  .todaybox .th b{font-size:15px;font-weight:900;}
+  .todaybox .th span{font-size:12px;color:var(--mute);}
+  .todaybox ul{display:flex;flex-direction:column;}
+  .todaybox li{display:grid;grid-template-columns:minmax(64px,auto) auto minmax(0,1fr);gap:4px 12px;padding-block:7px;font-size:14px;align-items:baseline;}
+  .todaybox li + li{border-top:1px solid var(--line);}
+  .todaybox li .mono{font-size:12.5px;color:var(--mute);}
+  .todaybox li .tp{color:var(--ink-2);min-width:0;}
+  .todaybox li.off{opacity:.55;}
+  @media (max-width:520px){.todaybox li{grid-template-columns:auto minmax(0,1fr);}.todaybox li .tp{grid-column:1 / -1;}}
+
+  /* courses */
+  .courses{display:flex;flex-direction:column;gap:18px;margin-top:22px;}
+  .course{border:1.5px solid var(--ink);border-radius:14px;background:var(--card);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0;}
+  .chd h3{font-size:20px;font-weight:900;line-height:1.3;}
+  .cmeta{font-size:13px;color:var(--mute);}
+  .wkrow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+  @media (max-width:520px){.wkrow{grid-template-columns:minmax(0,1fr);}}
+  .wk{border-radius:10px;padding:8px 12px;background:var(--paper-2);display:flex;flex-direction:column;min-width:0;}
+  .wk span{font-family:var(--font-mono);font-size:11.5px;color:var(--mute);letter-spacing:.04em;}
+  .wk b{font-size:15px;line-height:1.5;}
+  .wk.now{background:var(--ink);color:var(--paper);}
+  .wk.now span{color:var(--paper);opacity:.75;}
+  .cnext{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--ink-2);}
+  .cnext em{font-style:normal;font-weight:700;font-size:12.5px;}
+  .cnext em.hot{color:var(--hot);} .cnext em.warn{color:var(--warn);}
+  .gbar{display:flex;gap:2px;height:12px;}
+  .gbar i{display:block;border-radius:2px 4px 4px 2px;min-width:4px;}
+  .g0{background:var(--ink);} .g1{background:color-mix(in srgb, var(--ink) 58%, var(--paper));} .g2{background:color-mix(in srgb, var(--ink) 28%, var(--paper));}
+  .gleg{display:flex;flex-wrap:wrap;gap:2px 14px;font-size:12.5px;color:var(--ink-2);}
+  .gleg span{display:flex;align-items:center;gap:5px;}
+  .gleg i{width:9px;height:9px;border-radius:2px;display:block;}
+  .gleg b{font-family:var(--font-mono);font-weight:600;color:var(--ink);}
+  .gnote{font-size:13px;color:var(--mute);}
+  .cnotes h4{font-size:14px;font-weight:900;margin-bottom:4px;}
+  .cnotes ul{display:flex;flex-direction:column;gap:5px;font-size:14.5px;color:var(--ink-2);}
+  .cnotes li{display:flex;gap:10px;}
+  .cnotes li::before{content:"";flex:none;width:12px;height:8px;border-radius:50%;background:var(--ink);margin-top:9px;}
+  .cnotes .none{font-size:13.5px;color:var(--mute);}
+  .allwk summary{cursor:pointer;font-weight:700;font-size:14px;}
+  .allwk ol{margin-top:8px;display:flex;flex-direction:column;font-size:13.5px;}
+  .allwk li{display:grid;grid-template-columns:34px 92px minmax(0,1fr);gap:8px;padding:5px 6px;border-radius:6px;color:var(--ink-2);}
+  .allwk li .mono{font-size:12px;color:var(--mute);}
+  .allwk li.cur{background:var(--acc-soft);color:var(--ink);font-weight:700;}
+  @media (max-width:420px){.allwk li{grid-template-columns:34px minmax(0,1fr);}.allwk li .d{display:none;}}
+  a.mini{text-decoration:none;display:inline-flex;align-items:center;}
+  footer a{color:inherit;}
+
   /* owner bar */
   .admin{margin-top:18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 12px;border-radius:10px;background:var(--acc-soft);font-size:13.5px;color:var(--ink-2);}
   .admin b{color:var(--ink);}
@@ -226,7 +279,7 @@
 <footer>
   <div class="wrap">
     <b>免責聲明</b>　本站整理自老師公告與課堂紀錄，所有日期、範圍與規定以老師公告為準。若與公告不同，請以公告為準並回報更正。<br>
-    財金一丙 林言樵 製
+    財金一丙 林言樵 製　·　<a href="https://claude.ai/artifact/Ep9BWKGr2FX1bSQ3zxTTNh" target="_blank" rel="noopener">財金系大一刷題網</a>
   </div>
 </footer>
 
@@ -244,6 +297,8 @@
   const DEFAULT_SUBJECTS = ['經濟學', '財務數學', '會計', '英文'];
   const TYPES = { exam:'考試', hw:'作業', report:'報告', quiz:'小考' };
   const REVIEW_TIME = '每天早上 7 點';
+  const PRACTICE_URL = 'https://claude.ai/artifact/Ep9BWKGr2FX1bSQ3zxTTNh';
+  const SEM_WEEKS = 18;
 
   /* ================= 工具 ================= */
   const $ = (s, r=document) => r.querySelector(s);
@@ -268,11 +323,19 @@
     subj: new Set(), type: new Set(), q: '',
     calMonth: new Date(today0.getFullYear(), today0.getMonth(), 1), calDay: null
   };
-  const D = { events: [], notes: {}, reports: [], review: [], subjects: DEFAULT_SUBJECTS.slice(), loaded: false, offline: false };
+  const D = { events: [], notes: {}, reports: [], review: [], courses: [], start: '2026-09-07', subjects: DEFAULT_SUBJECTS.slice(), loaded: false, offline: false };
   let db = null, room = null, comments = null, canEdit = false;
   let peers = [];
 
-  const subjects = () => D.subjects.length ? D.subjects : DEFAULT_SUBJECTS;
+  const courses = () => D.courses.slice().sort((a, b) => (a.order || 0) - (b.order || 0));
+  const subjects = () => {
+    const base = D.subjects.length ? D.subjects : DEFAULT_SUBJECTS;
+    if(!D.courses.length) return base;
+    const cs = courses().map(c => c.short);
+    return [...cs, ...base.filter(n => !cs.includes(n))];
+  };
+  const weekNo = d => Math.floor((d - parseDay(D.start)) / (7 * 864e5)) + 1;
+  const weekRange = n => { const a = addDays(parseDay(D.start), (n - 1) * 7), b = addDays(a, 6); return `${a.getMonth()+1}/${a.getDate()}–${b.getMonth()+1}/${b.getDate()}`; };
   const events = () => D.events.map(e => {
     const date = parseDay(e.date);
     const [h, m] = String(e.time || '00:00').split(':').map(Number);
@@ -281,13 +344,13 @@
   const urgency = e => e.days < 0 ? 'past' : e.days <= 3 ? 'hot' : e.days <= 7 ? 'warn' : 'calm';
 
   /* ================= 頁面框架 ================= */
-  const PAGES = [['schedule','時程'],['notes','上課重點'],['reports','分組報告']];
+  const PAGES = [['schedule','時程'],['courses','各科進度'],['reports','分組報告']];
 
   function renderChrome(){
     const nav = $('#pages'), entered = !!S.name;
     nav.hidden = !entered; $('#here').hidden = !entered; $('#cbar').hidden = !entered;
-    nav.innerHTML = PAGES.map(([k, n]) => `<button class="pg" data-p="${k}" ${S.page === k ? 'aria-current="page"' : ''}>${n}</button>`).join('');
-    nav.querySelectorAll('.pg').forEach(b => b.addEventListener('click', () => { S.page = b.dataset.p; render(); window.scrollTo(0, 0); }));
+    nav.innerHTML = PAGES.map(([k, n]) => `<button class="pg" data-p="${k}" ${S.page === k ? 'aria-current="page"' : ''}>${n}</button>`).join('') + `<a class="pg ext" href="${PRACTICE_URL}" target="_blank" rel="noopener">刷題網站 ↗</a>`;
+    nav.querySelectorAll('button.pg').forEach(b => b.addEventListener('click', () => { S.page = b.dataset.p; render(); window.scrollTo(0, 0); }));
     renderHere();
   }
 
@@ -323,7 +386,7 @@
     const app = $('#app');
     if(!S.name){ renderGate(app); return; }
     if(S.page === 'schedule') app.innerHTML = scheduleHTML();
-    else if(S.page === 'notes') app.innerHTML = notesHTML();
+    else if(S.page === 'courses') app.innerHTML = coursesHTML();
     else app.innerHTML = reportsHTML();
     bind();
   }
@@ -363,7 +426,7 @@
     return `<li class="item ${u}" id="ev-${esc(e.id)}" data-comment-target>
       <div class="count"><small>${lab}</small><b>${num}</b>${unit}</div>
       <div class="main">
-        <div class="tags"><span class="tag type">${TYPES[e.type] || '其他'}</span><span class="tag">${esc(e.subj)}</span>${e.wasObj ? '<span class="tag chg">已更動</span>' : ''}</div>
+        <div class="tags"><span class="tag type">${TYPES[e.type] || '其他'}</span><span class="tag">${esc(e.subj)}</span>${e.wasObj ? '<span class="tag chg">已更動</span>' : ''}${e.tentative ? '<span class="tag tent">暫定</span>' : ''}</div>
         <h4>${esc(e.title)}</h4>
         <div class="meta"><span class="mono">${fmtDate(e.dateObj)} ${esc(e.time || '')}</span>${e.place ? `<span>${esc(e.place)}</span>` : ''}</div>
         ${(e.scope || e.weight) ? `<div class="meta">${e.scope ? `<span>範圍：${esc(e.scope)}</span>` : ''}${e.weight ? `<span>占 ${esc(e.weight)}%</span>` : ''}</div>` : ''}
@@ -409,7 +472,7 @@
     if(!canEdit) return '';
     const btn = what === 'ev' ? '<button class="mini" id="addEv">＋ 新增事項</button>'
               : what === 'rep' ? '<button class="mini" id="addRep">＋ 新增報告</button>'
-              : '<button class="mini" id="editSubj">管理科目</button>';
+              : (D.courses.length ? '' : '<button class="mini" id="editSubj">管理科目</button>');
     const rv = D.review.length ? `<button class="mini" id="openReview" style="border-color:var(--hot);color:var(--hot)">待你決定 ${D.review.length} 件</button>` : '';
     return `<div class="admin"><b>管理者</b><span>只有你看得到這一列。</span>${btn}${rv}</div>`;
   }
@@ -431,9 +494,10 @@
     const all = events();
     const upcoming = all.filter(e => e.days >= 0);
     const in3 = upcoming.filter(e => e.days <= 3).length, in7 = upcoming.filter(e => e.days <= 7).length;
-    const head = `<div class="kicker">${today0.getFullYear()}/${today0.getMonth()+1}/${today0.getDate()}（${WD[today0.getDay()]}）</div>
+    const wk = weekNo(today0);
+    const head = `<div class="kicker">${today0.getFullYear()}/${today0.getMonth()+1}/${today0.getDate()}（${WD[today0.getDay()]}）${wk >= 1 && wk <= SEM_WEEKS ? `　第 ${wk} 週` : ''}</div>
       <h2 id="pageHead" data-comment-target>這週要交什麼、考什麼</h2>
-      <p class="lede">考試、作業、小考、報告，依剩餘天數排序。3 天內是紅色，7 天內是黃色。</p>${adminBar('ev')}`;
+      <p class="lede">考試、作業、小考、報告，依剩餘天數排序。3 天內是紅色，7 天內是黃色，標「暫定」的是課程大綱預排、還沒有老師正式公告。</p>${adminBar('ev')}${todayHTML()}`;
     if(!D.loaded) return head + `<p class="empty">${D.offline ? '這個畫面現在讀不到資料。請從 claude.ai 的連結打開。' : '正在讀取…'}</p>`;
     if(!all.length) return head + emptyBox('還沒有任何事項', canEdit ? '按上面的「新增事項」加入第一筆，或把老師的公告貼給 Claude，請它幫你整理進來。' : '老師公告後會整理到這裡。你知道什麼消息，按下方的「補充／回報」告訴大家。');
     const list = filtered();
@@ -450,11 +514,61 @@
       ${S.view === 'list' ? listHTML(list) : calHTML(list)}`;
   }
 
-  /* ================= 上課重點 ================= */
-  function notesHTML(){
-    const head = `<div class="kicker">NOTES</div><h2 id="pageHead" data-comment-target>老師上課重點</h2>
-      <p class="lede">每科最近的上課重點。這裡只有管理者能改；你有補充就按該科的「補充這科」，審核通過後會加進來。</p>${adminBar('notes')}`;
+  /* ================= 今天的課 ================= */
+  function todayHTML(){
+    if(!D.courses.length) return '';
+    for(let i = 0; i < 7; i++){
+      const d = addDays(today0, i), w = weekNo(d);
+      if(w < 1 || w > SEM_WEEKS) continue;
+      const list = courses().filter(c => c.day === d.getDay());
+      if(!list.length) continue;
+      const label = i === 0 ? '今天的課' : i === 1 ? '明天的課' : `下次上課：${fmtDate(d)}`;
+      const items = list.map(c => {
+        const t = (c.weeks || [])[w - 1] || '';
+        return `<li class="${/停課|放假/.test(t) ? 'off' : ''}"><b>${esc(c.short)}</b><span class="mono">${esc(c.periods)} 節 · ${esc(c.room)}</span><span class="tp">${esc(t)}</span></li>`;
+      }).join('');
+      return `<div class="todaybox"><div class="th"><b>${label}</b><span class="mono">第 ${w} 週 · ${weekRange(w)}</span></div><ul>${items}</ul></div>`;
+    }
+    return '';
+  }
+
+  /* ================= 各科進度 ================= */
+  function courseCard(c, cur){
+    const weeks = Array.isArray(c.weeks) ? c.weeks : [];
+    const n = D.notes[c.short] || {};
+    const items = Array.isArray(n.items) ? n.items : [];
+    const g = Array.isArray(c.grading) ? c.grading : [];
+    const bar = g.length ? `<div class="gbar" role="img" aria-label="評分：${esc(g.map(x => x.k + ' ' + x.v + '%').join('、'))}">${g.map((x, i) => `<i class="g${i % 3}" style="flex:${Number(x.v) || 1}"></i>`).join('')}</div>
+      <div class="gleg">${g.map((x, i) => `<span><i class="g${i % 3}"></i>${esc(x.k)} <b>${esc(x.v)}%</b></span>`).join('')}</div>` : '';
+    const up = events().filter(e => e.subj === c.short && e.days >= 0).slice(0, 2);
+    return `<article class="course" id="c-${esc(c.id)}" data-comment-target>
+      <div class="chd"><h3>${esc(c.name)}</h3><div class="cmeta">${esc(c.teacher)}　${c.day != null ? `週${WD[c.day]} ${esc(c.periods)} 節` : esc(c.periods)}　${esc(c.room)}</div></div>
+      <div class="wkrow">
+        <div class="wk now"><span>本週 · 第 ${cur} 週</span><b>${esc(weeks[cur - 1] || '—')}</b></div>
+        ${cur < SEM_WEEKS ? `<div class="wk"><span>下週 · 第 ${cur + 1} 週</span><b>${esc(weeks[cur] || '—')}</b></div>` : ''}
+      </div>
+      ${up.length ? `<div class="cnext">${up.map(e => `<span><b>${TYPES[e.type] || ''}</b> ${esc(e.title)} · ${fmtDate(e.dateObj)}${e.days <= 7 ? ` <em class="${urgency(e)}">還剩 ${e.days} 天</em>` : ''}</span>`).join('')}</div>` : ''}
+      ${bar}${c.gradingNote ? `<p class="gnote">${esc(c.gradingNote)}</p>` : ''}
+      <div class="cnotes"><h4>老師上課重點</h4>
+        ${items.length ? `<ul>${items.map(t => `<li>${esc(t)}</li>`).join('')}</ul><div class="src">來源：${esc(n.src || '課堂紀錄')}${n.updatedAt ? `　最後更新 ${fmtUpd(n.updatedAt)}` : ''}</div>` : '<p class="none">還沒有人整理。上完課記得的重點，按「補充這科」寫一句就好。</p>'}
+      </div>
+      ${c.note ? `<p class="gnote">${esc(c.note)}</p>` : ''}
+      <details class="allwk"><summary>完整 ${weeks.length} 週進度</summary><ol>${weeks.map((t, i) => `<li class="${i + 1 === cur ? 'cur' : ''}"><span class="mono">W${i + 1}</span><span class="mono d">${weekRange(i + 1)}</span><span>${esc(t)}</span></li>`).join('')}</ol></details>
+      <div class="acts">
+        <button class="mini" data-contrib="c-${esc(c.id)}" data-label="${esc(c.short + '｜上課重點')}">補充這科</button>
+        ${c.practice ? `<a class="mini" href="${esc(c.practice)}" target="_blank" rel="noopener">去刷題 ↗</a>` : ''}
+        ${c.link ? `<a class="mini ghost" href="${esc(c.link)}" target="_blank" rel="noopener">${esc(c.linkLabel || '教材')} ↗</a>` : ''}
+        ${canEdit ? `<button class="mini ghost" data-edit-note="${esc(c.short)}">編輯重點</button>` : ''}
+      </div>
+    </article>`;
+  }
+
+  function coursesHTML(){
+    const wk = weekNo(today0), cur = Math.min(Math.max(wk, 1), SEM_WEEKS);
+    const head = `<div class="kicker">第 ${cur} 週 · ${weekRange(cur)}</div><h2 id="pageHead" data-comment-target>各科進度與重點</h2>
+      <p class="lede">每科這週上什麼、怎麼算分、老師講過的重點。進度來自課程大綱，實際以老師上課為準。</p>${adminBar('notes')}`;
     if(!D.loaded) return head + `<p class="empty">${D.offline ? '這個畫面現在讀不到資料。請從 claude.ai 的連結打開。' : '正在讀取…'}</p>`;
+    if(D.courses.length) return head + `<div class="courses">${courses().map(c => courseCard(c, cur)).join('')}</div>`;
     return head + `<div class="notes">${subjects().map((s, i) => {
       const n = D.notes[s] || {};
       const items = Array.isArray(n.items) ? n.items : [];
@@ -671,8 +785,9 @@
     if(!db){ D.offline = true; render(); }
     else {
       let got = 0;
-      const ready = () => { if(++got >= 3){ D.loaded = true; } render(); };
-      let r1 = false, r2 = false, r3 = false;
+      const ready = () => { if(++got >= 4){ D.loaded = true; } render(); };
+      let r1 = false, r2 = false, r3 = false, r4 = false;
+      db.collection('courses').onSnapshot(s => { D.courses = s.docs.map(d => ({ id: d.id, ...d.data() })); if(!r4){ r4 = true; ready(); } else render(); }, () => { if(!r4){ r4 = true; ready(); } });
       db.collection('events').onSnapshot(s => { D.events = s.docs.map(d => ({ id: d.id, ...d.data() })); if(!r1){ r1 = true; ready(); } else render(); }, () => { D.offline = true; render(); });
       db.collection('reports').onSnapshot(s => { D.reports = s.docs.map(d => ({ id: d.id, ...d.data() })); if(!r2){ r2 = true; ready(); } else render(); }, () => {});
       db.collection('site').onSnapshot(s => {
@@ -681,6 +796,7 @@
           if(d.id === 'notes') D.notes = v.bySubj || {};
           if(d.id === 'review') D.review = Array.isArray(v.items) ? v.items : [];
           if(d.id === 'config' && Array.isArray(v.subjects) && v.subjects.length) D.subjects = v.subjects;
+          if(d.id === 'config' && typeof v.semesterStart === 'string') D.start = v.semesterStart;
         });
         if(!r3){ r3 = true; ready(); } else render();
       }, () => {});

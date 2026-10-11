@@ -1,0 +1,1002 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>財金系大一刷題網</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  /* Layout: one answer-card motif (OMR bubbles, timing marks) carried through a long scroll of
+     diagrams and charts; graphite on neutral paper, no hue. */
+  :root{
+    --paper:#F5F5F3; --paper-2:#EBEBE8; --card:#FBFBFA;
+    --ink:#141414; --ink-2:#484848; --mute:#686866; --line:rgba(20,20,20,.15);
+    --acc:#141414; --acc-ink:#F5F5F3; --acc-soft:rgba(20,20,20,.06);
+    --good:#3F6652; --good-bg:rgba(63,102,82,.10);
+    --bad:#94483A; --bad-bg:rgba(148,72,58,.09);
+    --t1:var(--acc);
+    --t2:color-mix(in srgb, var(--acc) 62%, var(--paper));
+    --t3:color-mix(in srgb, var(--acc) 30%, var(--paper));
+    --font-sans:"Noto Sans TC","PingFang TC","Heiti TC","Microsoft JhengHei",sans-serif;
+    --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#121212; --paper-2:#1B1B1B; --card:#171717;
+      --ink:#EDEDEB; --ink-2:#B5B5B2; --mute:#9A9A97; --line:rgba(237,237,235,.16);
+      --acc:#EDEDEB; --acc-ink:#121212; --acc-soft:rgba(237,237,235,.08);
+      --good:#86B79B; --good-bg:rgba(134,183,155,.12);
+      --bad:#D08B7C; --bad-bg:rgba(208,139,124,.12);
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#121212; --paper-2:#1B1B1B; --card:#171717;
+    --ink:#EDEDEB; --ink-2:#B5B5B2; --mute:#9A9A97; --line:rgba(237,237,235,.16);
+    --acc:#EDEDEB; --acc-ink:#121212; --acc-soft:rgba(237,237,235,.08);
+    --good:#86B79B; --good-bg:rgba(134,183,155,.12);
+    --bad:#D08B7C; --bad-bg:rgba(208,139,124,.12);
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--font-sans);font-size:16px;line-height:1.75;-webkit-tap-highlight-color:transparent;}
+  h1,h2,h3,p,ul,ol,figure{margin:0;}
+  ul,ol{padding:0;list-style:none;}
+  button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:none;cursor:pointer;}
+  a{color:inherit;}
+  :focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:4px;}
+  .wrap{max-width:1080px;margin-inline:auto;padding-inline:max(16px,4vw);}
+  .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
+  section{padding-block:clamp(56px,9vw,100px);}
+  .kicker{font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:600;}
+  h2{font-size:clamp(26px,4.6vw,42px);font-weight:900;line-height:1.2;letter-spacing:-.01em;text-wrap:balance;margin-top:10px;}
+  .lede{color:var(--ink-2);max-width:62ch;margin-top:14px;}
+  .sechead{margin-bottom:clamp(28px,5vw,48px);}
+
+  /* nav */
+  .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--paper);border-bottom:1px solid var(--line);}
+  .nav .wrap{display:flex;align-items:center;gap:20px;height:56px;}
+  .brand{font-weight:900;font-size:18px;letter-spacing:-.01em;text-decoration:none;display:flex;align-items:center;gap:8px;}
+  .brand i{width:20px;height:13px;border-radius:50%;background:var(--ink);display:block;}
+  .navlinks{display:flex;gap:20px;margin-left:auto;font-size:14px;color:var(--ink-2);}
+  .navlinks a{text-decoration:none;}
+  .navlinks a:hover{color:var(--ink);}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:999px;font-weight:700;font-size:15px;text-decoration:none;background:var(--acc);color:var(--acc-ink);border:1.5px solid var(--acc);}
+  .btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink);}
+  .btn.sm{padding:8px 16px;font-size:14px;}
+  .nav .btn{margin-left:0;}
+  @media (max-width:760px){.navlinks{display:none;} .nav .btn{margin-left:auto;}}
+
+  /* hero */
+  .hero{padding-block:clamp(40px,7vw,84px) clamp(40px,6vw,64px);}
+  .herogrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(28px,5vw,64px);align-items:center;}
+  @media (max-width:860px){.herogrid{grid-template-columns:minmax(0,1fr);}}
+  .hero h1{font-size:clamp(38px,7.4vw,76px);font-weight:900;line-height:1.08;letter-spacing:-.02em;text-wrap:balance;margin-top:14px;}
+  .hero h1 em{font-style:normal;background:linear-gradient(transparent 62%, var(--acc-soft) 62%);box-shadow:inset 0 -.18em 0 var(--acc-soft);color:var(--acc);}
+  .hero p.sub{font-size:clamp(16px,2vw,19px);color:var(--ink-2);margin-top:20px;max-width:34em;}
+  .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;}
+  .omr{background:var(--card);border:1.5px solid var(--ink);border-radius:8px;padding:18px 40px 16px 18px;position:relative;min-width:0;}
+  .omr::after{content:"";position:absolute;top:18px;bottom:18px;right:14px;width:10px;background:repeating-linear-gradient(to bottom,var(--ink) 0 6px,transparent 6px 16px);}
+  .omrhead{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:12px;gap:10px;}
+  .omrhead b{font-weight:900;font-size:15px;}
+  .omrhead span{font-family:var(--font-mono);font-size:11px;color:var(--mute);letter-spacing:.06em;}
+  .omrcols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 26px;}
+  .omrrow{display:flex;align-items:center;gap:8px;padding-block:5px;}
+  .omrrow .n{font-family:var(--font-mono);font-size:11px;color:var(--mute);width:18px;text-align:right;flex:none;}
+  .bubbles{display:flex;gap:7px;}
+  .bub{width:20px;height:13px;border-radius:50%;border:1.4px solid var(--mute);display:block;position:relative;}
+  .bub.on{background:var(--ink);border-color:var(--ink);animation:fill .5s ease-out backwards;animation-delay:var(--d,0s);}
+  .bub.no{background:var(--bad);border-color:var(--bad);animation:fill .5s ease-out backwards;animation-delay:var(--d,0s);}
+  .bub.ok{border-color:var(--good);box-shadow:0 0 0 2.5px var(--good-bg), inset 0 0 0 1.5px var(--good);}
+  @keyframes fill{from{background:transparent;border-color:var(--mute);}}
+  @media (prefers-reduced-motion: reduce){.bub.on,.bub.no{animation:none;}}
+  .omrlegend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-2);}
+  .omrlegend span{display:flex;align-items:center;gap:6px;}
+  .omrnote{margin-top:12px;background:var(--bad-bg);color:var(--ink);border-radius:8px;padding:10px 12px;font-size:13.5px;line-height:1.6;}
+  .omrnote b{color:var(--bad);}
+
+  .strip{border-block:1px solid var(--line);}
+  .strip .wrap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));}
+  .strip .it{padding:20px 12px 20px 0;display:flex;flex-direction:column;gap:2px;}
+  .strip .it + .it{padding-left:16px;border-left:1px solid var(--line);}
+  .strip b{font-family:var(--font-mono);font-size:clamp(24px,4vw,38px);font-weight:600;line-height:1.1;}
+  .strip span{font-size:13px;color:var(--ink-2);}
+  @media (max-width:620px){.strip .wrap{grid-template-columns:repeat(2,minmax(0,1fr));}.strip .it:nth-child(3){padding-left:0;border-left:0;}.strip .it:nth-child(n+3){border-top:1px solid var(--line);}}
+
+  /* pains */
+  .pains{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,3vw,32px);}
+  @media (max-width:760px){.pains{grid-template-columns:minmax(0,1fr);}}
+  .pain{border-top:2px solid var(--ink);padding-top:16px;display:flex;flex-direction:column;gap:10px;}
+  .pain h3{font-size:20px;font-weight:900;line-height:1.35;}
+  .pain p{color:var(--ink-2);font-size:15px;}
+  .pain .fix{font-size:14px;font-weight:700;color:var(--acc);display:flex;gap:8px;}
+
+  /* loop diagram */
+  .loopbox{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:clamp(18px,3vw,32px);}
+  .flow{display:flex;align-items:stretch;gap:0;}
+  .fstep{flex:1 1 0;min-width:0;border:1.5px solid var(--ink);border-radius:12px;padding:14px 14px 16px;background:var(--paper);display:flex;flex-direction:column;gap:4px;}
+  .fstep .fn{font-family:var(--font-mono);font-size:11px;color:var(--mute);letter-spacing:.08em;}
+  .fstep b{font-size:18px;font-weight:900;line-height:1.3;}
+  .fstep span.d{font-size:13.5px;color:var(--ink-2);line-height:1.6;}
+  .fstep.end{border-color:var(--good);background:var(--good-bg);}
+  .via{flex:0 0 92px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding-inline:4px;}
+  .via small{font-size:12px;font-weight:700;color:var(--acc);text-align:center;line-height:1.3;}
+  .via i{display:block;width:100%;height:2px;background:var(--acc);position:relative;}
+  .via i::after{content:"";position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:8px solid var(--acc);}
+  @media (max-width:860px){
+    .flow{flex-direction:column;}
+    .via{flex:0 0 auto;flex-direction:row;padding-block:6px;gap:10px;justify-content:flex-start;padding-left:28px;}
+    .via i{width:2px;height:28px;flex:none;}
+    .via i::after{right:auto;left:-4px;top:auto;bottom:-1px;border:5px solid transparent;border-top:8px solid var(--acc);border-left-width:5px;}
+    .via small{text-align:left;}
+  }
+  .loopback{margin-top:18px;border:1.5px dashed var(--acc);border-radius:12px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start;background:var(--acc-soft);}
+  .loopback svg{flex:none;width:28px;height:28px;margin-top:2px;color:var(--acc);}
+  .loopback b{display:block;font-size:16px;}
+  .loopback span{font-size:14px;color:var(--ink-2);}
+
+  /* demo */
+  .demogrid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,4vw,56px);align-items:start;}
+  @media (max-width:860px){.demogrid{grid-template-columns:minmax(0,1fr);}}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+  .tab{padding:9px 18px;border-radius:999px;border:1.5px solid var(--line);font-weight:700;font-size:15px;color:var(--ink-2);}
+  .tab[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .seewhat{display:flex;flex-direction:column;gap:12px;margin-top:6px;}
+  .seewhat li{display:flex;gap:12px;font-size:15px;color:var(--ink-2);}
+  .seewhat li::before{content:"";flex:none;width:20px;height:13px;border-radius:50%;background:var(--ink);margin-top:7px;}
+  .demohint{margin-top:22px;font-size:13.5px;color:var(--mute);}
+  .phone{width:min(100%,380px);margin-inline:auto;background:var(--paper-2);border:1px solid var(--line);border-radius:36px;padding:12px;}
+  .screen{background:var(--card);border-radius:26px;padding:18px 16px 20px;min-height:540px;display:flex;flex-direction:column;gap:12px;}
+  .sbar{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--mute);}
+  .sbar b{color:var(--acc);font-weight:600;}
+  .sprog{height:4px;border-radius:99px;background:var(--paper-2);overflow:hidden;}
+  .sprog i{display:block;height:100%;width:40%;background:var(--acc);border-radius:99px;}
+  .sq{font-size:16.5px;font-weight:500;line-height:1.6;}
+  .sq small{display:block;margin-top:6px;font-size:13px;color:var(--ink-2);font-weight:400;}
+  .sopts{display:flex;flex-direction:column;gap:8px;}
+  .sopt{display:flex;gap:10px;align-items:flex-start;text-align:left;padding:10px 12px;border:1.2px solid var(--line);border-radius:12px;background:var(--paper);font-size:14.5px;line-height:1.5;}
+  .sopt .l{flex:none;width:22px;height:22px;border-radius:6px;background:var(--paper-2);display:grid;place-items:center;font-family:var(--font-mono);font-weight:600;font-size:12px;margin-top:1px;}
+  .sopt:not(:disabled):hover{border-color:var(--acc);}
+  .sopt.correct{border-color:var(--good);background:var(--good-bg);}
+  .sopt.correct .l{background:var(--good);color:#fff;}
+  .sopt.wrong{border-color:var(--bad);background:var(--bad-bg);}
+  .sopt.wrong .l{background:var(--bad);color:#fff;}
+  .sopt.dim{opacity:.55;}
+  .sopt:disabled{cursor:default;}
+  .fb{padding:9px 12px;border-radius:10px;font-weight:700;font-size:14px;}
+  .fb.ok{background:var(--good-bg);color:var(--good);}
+  .fb.bad{background:var(--bad-bg);color:var(--bad);}
+  .xb{border-radius:12px;padding:11px 13px;font-size:13.5px;line-height:1.7;background:var(--paper);border:1px solid var(--line);}
+  .xb .t{display:block;font-family:var(--font-mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;color:var(--acc);margin-bottom:4px;}
+  .xb.you{background:var(--bad-bg);border-color:transparent;}
+  .xb.you .t{color:var(--bad);}
+  .xb.key{background:var(--acc-soft);border-color:var(--acc);font-weight:700;}
+  .xb ol{list-style:decimal;padding-left:18px;display:flex;flex-direction:column;gap:3px;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+  .chips span{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;background:var(--card);}
+  .chips span b{font-weight:700;margin-right:5px;}
+  .redo{align-self:flex-start;font-size:13px;font-weight:700;color:var(--acc);padding:6px 0;}
+  .numrow{display:flex;gap:8px;}
+  .numrow input{flex:1;min-width:0;font-family:var(--font-mono);font-size:17px;padding:10px 12px;border-radius:10px;border:1.2px solid var(--line);background:var(--paper);color:var(--ink);}
+  .numrow button{padding:0 16px;border-radius:10px;background:var(--acc);color:var(--acc-ink);font-weight:700;}
+
+  /* charts */
+  .chartcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:clamp(18px,3vw,32px);}
+  .crow{display:grid;grid-template-columns:96px minmax(0,1fr) 64px;gap:4px 14px;align-items:center;padding-block:14px;}
+  .crow + .crow{border-top:1px solid var(--line);}
+  .crow .nm{font-weight:900;font-size:16px;}
+  .crow .nm small{display:block;font-size:12px;font-weight:400;color:var(--mute);line-height:1.3;}
+  .crow .tot{font-family:var(--font-mono);font-weight:600;font-size:20px;text-align:right;font-variant-numeric:tabular-nums;}
+  .bar{display:flex;gap:2px;height:22px;min-width:0;}
+  .bar i{display:block;height:100%;min-width:3px;border-radius:2px 5px 5px 2px;}
+  .bar i:nth-child(1){background:var(--t1);}
+  .bar i:nth-child(2){background:var(--t2);}
+  .bar i:nth-child(3){background:var(--t3);}
+  .barcol{display:flex;flex-direction:column;gap:8px;min-width:0;}
+  .leg{display:flex;flex-wrap:wrap;gap:2px 14px;font-size:12.5px;color:var(--ink-2);}
+  .leg span{display:flex;align-items:center;gap:5px;}
+  .leg span::before{content:"";width:9px;height:9px;border-radius:2px;background:var(--c);}
+  .leg b{font-family:var(--font-mono);font-weight:600;color:var(--ink);}
+  @media (max-width:560px){.crow{grid-template-columns:minmax(0,1fr) auto;}.crow .barcol{grid-column:1 / -1;grid-row:2;}}
+  details.tbl{margin-top:14px;font-size:13px;color:var(--ink-2);}
+  details.tbl summary{cursor:pointer;font-weight:700;}
+  details.tbl table{border-collapse:collapse;margin-top:10px;width:100%;}
+  details.tbl td,details.tbl th{padding:5px 8px;border-bottom:1px solid var(--line);text-align:left;}
+  details.tbl td:last-child,details.tbl th:last-child{text-align:right;font-family:var(--font-mono);}
+  .tblwrap{overflow-x:auto;}
+
+  .heatgrid{display:flex;flex-direction:column;gap:18px;}
+  .hrow{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center;}
+  .hrow .nm{font-weight:900;font-size:16px;}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:4px;}
+  .tile{border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;min-height:62px;justify-content:space-between;border:1px solid var(--line);}
+  .tile small{font-size:12px;line-height:1.3;opacity:.9;}
+  .tile b{font-family:var(--font-mono);font-weight:600;font-size:20px;line-height:1.2;}
+  @media (max-width:560px){.hrow{grid-template-columns:minmax(0,1fr);gap:8px;}}
+  .heatkey{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--mute);margin-top:18px;}
+  .heatkey i{display:block;width:120px;height:8px;border-radius:99px;background:linear-gradient(90deg,var(--t3),var(--acc));}
+
+  /* subjects */
+  .subjects{display:flex;flex-direction:column;}
+  .subj{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr) auto;gap:16px clamp(20px,4vw,48px);padding-block:28px;border-top:1.5px solid var(--ink);align-items:start;}
+  .subj:last-child{border-bottom:1.5px solid var(--ink);}
+  @media (max-width:860px){.subj{grid-template-columns:minmax(0,1fr);}}
+  .subj h3{font-size:26px;font-weight:900;line-height:1.2;}
+  .subj .scope{font-family:var(--font-mono);font-size:12px;color:var(--mute);margin-top:6px;letter-spacing:.04em;}
+  .subj .num{font-family:var(--font-mono);font-size:34px;font-weight:600;margin-top:12px;line-height:1;}
+  .subj .num small{font-size:13px;font-family:var(--font-sans);color:var(--ink-2);margin-left:6px;font-weight:400;}
+  .subj ul{display:flex;flex-direction:column;gap:7px;font-size:15px;color:var(--ink-2);}
+  .subj li{display:flex;gap:10px;}
+  .subj li::before{content:"";flex:none;width:14px;height:9px;border-radius:50%;background:var(--ink);margin-top:9px;}
+  .subj li.hot{color:var(--ink);font-weight:700;}
+  .subj li.hot::before{background:var(--acc);}
+
+  /* economics exclusive */
+  .exc{background:var(--ink);color:var(--paper);border-radius:0;}
+  .exc .kicker{color:var(--paper);opacity:.7;}
+  .exc h2{color:var(--paper);}
+  .exc .lede{color:color-mix(in srgb, var(--paper) 78%, var(--ink));}
+  .excgrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(24px,4vw,48px);margin-top:36px;align-items:start;}
+  @media (max-width:860px){.excgrid{grid-template-columns:minmax(0,1fr);}}
+  .panel{background:color-mix(in srgb, var(--paper) 7%, var(--ink));border:1px solid color-mix(in srgb, var(--paper) 20%, var(--ink));border-radius:16px;padding:clamp(18px,3vw,28px);min-width:0;}
+  .panel h3{font-size:18px;font-weight:900;margin-bottom:16px;color:var(--paper);}
+  .comp{display:flex;gap:3px;height:56px;}
+  .comp i{display:flex;align-items:flex-end;padding:6px 8px;border-radius:4px 8px 8px 4px;font-family:var(--font-mono);font-size:13px;font-weight:600;min-width:0;overflow:hidden;white-space:nowrap;}
+  .comp i.a{background:var(--paper);color:var(--ink);}
+  .comp i.b{background:color-mix(in srgb, var(--paper) 62%, var(--ink));color:var(--ink);}
+  .comp i.c{background:color-mix(in srgb, var(--paper) 22%, var(--ink));color:var(--paper);}
+  .complabels{display:grid;grid-template-columns:71.1fr 13.7fr 15.1fr;gap:3px;margin-top:10px;font-size:12.5px;line-height:1.45;color:color-mix(in srgb, var(--paper) 78%, var(--ink));}
+  .complabels b{display:block;color:var(--paper);font-size:14px;}
+  .excfacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:22px;}
+  .excfacts div{border-top:1px solid color-mix(in srgb, var(--paper) 25%, var(--ink));padding-top:10px;font-size:13.5px;color:color-mix(in srgb, var(--paper) 78%, var(--ink));}
+  .excfacts b{display:block;font-family:var(--font-mono);font-size:26px;font-weight:600;color:var(--paper);line-height:1.2;}
+  .gfig svg{display:block;width:100%;height:auto;max-width:340px;margin-inline:auto;background:var(--card);border-radius:10px;color:var(--ink);}
+  .gfig figcaption{font-size:13px;margin-top:10px;color:color-mix(in srgb, var(--paper) 78%, var(--ink));}
+  .senior{margin-top:clamp(20px,3vw,32px);display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;align-items:start;}
+  @media (max-width:560px){.senior{grid-template-columns:minmax(0,1fr);}}
+  .pass{display:flex;align-items:center;gap:8px;}
+  .pass i{display:block;width:34px;height:34px;border-radius:50%;border:2px solid var(--paper);display:grid;place-items:center;font-style:normal;font-family:var(--font-mono);font-size:11px;font-weight:600;}
+  .pass i.me{background:var(--paper);color:var(--ink);}
+  .pass hr{width:26px;height:2px;border:0;background:var(--paper);margin:0;}
+  .senior ul{display:flex;flex-direction:column;gap:7px;font-size:15px;color:color-mix(in srgb, var(--paper) 85%, var(--ink));}
+  .senior li{display:flex;gap:10px;}
+  .senior li::before{content:"";flex:none;width:14px;height:9px;border-radius:50%;background:var(--paper);margin-top:9px;}
+
+  /* features */
+  .feat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1.5px solid var(--ink);}
+  @media (max-width:900px){.feat{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @media (max-width:560px){.feat{grid-template-columns:minmax(0,1fr);}}
+  .f{padding:20px 20px 24px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .f .tg{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:var(--acc);font-weight:600;}
+  .f h3{font-size:18px;font-weight:900;line-height:1.35;}
+  .f p{font-size:14.5px;color:var(--ink-2);}
+
+  /* fit */
+  .fit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,3vw,40px);}
+  @media (max-width:760px){.fit{grid-template-columns:minmax(0,1fr);}}
+  .fit h3{font-size:20px;font-weight:900;margin-bottom:12px;}
+  .fit li{display:flex;gap:10px;padding-block:7px;border-top:1px solid var(--line);font-size:15px;color:var(--ink-2);}
+  .fit li b{flex:none;font-family:var(--font-mono);color:var(--good);}
+  .fit .no li b{color:var(--bad);}
+
+  /* faq */
+  .faq{border-top:1.5px solid var(--ink);}
+  .faq details{border-bottom:1px solid var(--line);padding-block:16px;}
+  .faq summary{cursor:pointer;font-weight:700;font-size:17px;list-style:none;display:flex;justify-content:space-between;gap:16px;}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{content:"+";font-family:var(--font-mono);font-size:20px;color:var(--acc);line-height:1.4;}
+  .faq details[open] summary::after{content:"–";}
+  .faq p{margin-top:10px;color:var(--ink-2);font-size:15px;max-width:62ch;}
+
+  /* plans */
+  .plangrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(16px,3vw,32px);align-items:stretch;}
+  @media (max-width:860px){.plangrid{grid-template-columns:minmax(0,1fr);}}
+  .planlist{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:clamp(8px,2vw,16px) clamp(18px,3vw,28px);}
+  .prow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;align-items:baseline;padding-block:16px;}
+  .prow + .prow{border-top:1px solid var(--line);}
+  .prow b{font-size:18px;font-weight:900;}
+  .prow small{grid-column:1;font-size:13.5px;color:var(--ink-2);line-height:1.6;}
+  .prow .pr{grid-row:1 / span 2;grid-column:2;font-family:var(--font-mono);font-weight:600;font-size:26px;text-align:right;font-variant-numeric:tabular-nums;}
+  .prow .pr small{font-family:var(--font-sans);font-size:12px;color:var(--mute);margin-left:3px;font-weight:400;}
+  .planmain{background:var(--ink);color:var(--paper);border-radius:16px;padding:clamp(22px,3.5vw,36px);display:flex;flex-direction:column;gap:12px;}
+  .planmain .tag{font-family:var(--font-mono);font-size:12px;letter-spacing:.12em;opacity:.7;}
+  .planmain h3{font-size:26px;font-weight:900;line-height:1.2;}
+  .planmain .big{font-family:var(--font-mono);font-size:clamp(44px,7vw,64px);font-weight:600;line-height:1;}
+  .planmain .big small{font-family:var(--font-sans);font-size:14px;font-weight:400;opacity:.7;margin-left:6px;}
+  .planmain .was{font-size:14px;opacity:.7;}
+  .planmain .was s{font-family:var(--font-mono);}
+  .planmain ul{display:flex;flex-direction:column;gap:6px;font-size:14.5px;opacity:.92;}
+  .planmain li{display:flex;gap:10px;}
+  .planmain li::before{content:"";flex:none;width:14px;height:9px;border-radius:50%;background:var(--paper);margin-top:9px;}
+  .how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,3vw,32px);margin-top:36px;counter-reset:s;}
+  @media (max-width:760px){.how{grid-template-columns:minmax(0,1fr);}}
+  .how li{border-top:2px solid var(--ink);padding-top:12px;display:flex;flex-direction:column;gap:2px;counter-increment:s;}
+  .how li b::before{content:counter(s,decimal-leading-zero);font-family:var(--font-mono);font-size:12px;color:var(--mute);margin-right:10px;font-weight:600;}
+  .how li b{font-size:17px;font-weight:900;}
+  .how li span{font-size:14px;color:var(--ink-2);}
+
+  /* member entry */
+  .memberlinks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:28px;}
+  @media (max-width:760px){.memberlinks{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  .memberlinks a{display:flex;flex-direction:column;gap:4px;padding:16px;border:1.5px solid var(--ink);border-radius:12px;text-decoration:none;font-weight:900;font-size:19px;line-height:1.3;background:var(--card);}
+  .memberlinks a small{font-weight:500;font-size:12.5px;color:var(--mute);font-family:var(--font-mono);}
+  .memberlinks a:hover{background:var(--ink);color:var(--paper);}
+  .memberlinks a:hover small{color:var(--paper);}
+
+  /* final cta */
+  .final{background:var(--acc);color:var(--acc-ink);}
+  .final h2{color:var(--acc-ink);font-size:clamp(30px,6vw,56px);}
+  .final p{color:var(--acc-ink);opacity:.9;margin-top:14px;max-width:44ch;}
+  .applinks{display:grid;grid-template-columns:repeat(3,minmax(0,240px));gap:10px;margin-top:30px;}
+  @media (max-width:560px){.applinks{grid-template-columns:minmax(0,1fr);}}
+  .applinks a{display:flex;flex-direction:column;gap:2px;padding:14px 16px;border:1.5px solid var(--acc-ink);border-radius:12px;text-decoration:none;font-weight:900;font-size:18px;line-height:1.3;}
+  .applinks a small{font-weight:400;font-size:12.5px;opacity:.85;font-family:var(--font-mono);}
+  .applinks a:hover{background:var(--acc-ink);color:var(--acc);}
+  .contact{margin-top:22px;font-size:15px;}
+  .contact code{font-family:var(--font-mono);background:rgba(255,255,255,.18);padding:2px 8px;border-radius:6px;}
+  footer{padding-block:28px 40px;font-size:12.5px;color:var(--mute);line-height:1.7;}
+
+  /* semester timeline */
+  .term{background:var(--paper-2);border-bottom:1px solid var(--line);}
+  .termgrid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(24px,4vw,56px);align-items:start;}
+  @media (max-width:860px){.termgrid{grid-template-columns:minmax(0,1fr);}}
+  .countbox{background:var(--ink);color:var(--paper);border-radius:16px;padding:clamp(20px,3vw,28px);display:flex;flex-direction:column;gap:10px;}
+  .countbox .kicker{color:var(--paper);opacity:.7;}
+  .countbox .big{font-family:var(--font-mono);font-size:clamp(52px,9vw,84px);font-weight:600;line-height:1;}
+  .countbox .big small{font-family:var(--font-sans);font-size:16px;font-weight:700;margin-left:8px;opacity:.8;}
+  .countbox p{font-size:15px;opacity:.9;}
+  .countbox .btn{background:var(--paper);color:var(--ink);border-color:var(--paper);align-self:flex-start;margin-top:6px;}
+  .countbox .note{font-size:12.5px;opacity:.7;}
+  .exams{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:6px clamp(14px,2.5vw,24px);}
+  .exams h3{font-size:15px;font-weight:900;padding-top:14px;padding-bottom:6px;border-bottom:1.5px solid var(--ink);display:flex;justify-content:space-between;gap:10px;}
+  .exams h3 span{font-family:var(--font-mono);font-size:12px;color:var(--mute);font-weight:600;}
+  .exams ul{display:flex;flex-direction:column;margin-bottom:8px;}
+  .exams li{display:grid;grid-template-columns:86px minmax(0,1fr) auto;gap:2px 12px;padding-block:8px;border-bottom:1px solid var(--line);font-size:14.5px;align-items:baseline;}
+  .exams li:last-child{border-bottom:0;}
+  .exams li .d{font-family:var(--font-mono);font-size:13px;color:var(--ink-2);}
+  .exams li .left{font-family:var(--font-mono);font-size:12.5px;color:var(--mute);white-space:nowrap;}
+  .exams li.soon .left{color:var(--bad);font-weight:600;}
+  .exams li.past{opacity:.45;}
+  .exams li .t small{color:var(--mute);font-size:12.5px;margin-left:4px;}
+  @media (max-width:480px){.exams li{grid-template-columns:72px minmax(0,1fr);}.exams li .left{grid-column:2;}}
+</style>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><i></i>財金系大一刷題網</a>
+    <nav class="navlinks" aria-label="頁面導覽">
+      <a href="#term">考試週</a><a href="#loop">怎麼學</a><a href="#demo">試做</a><a href="#size">題庫</a><a href="#econ">經濟學專區</a><a href="#plans">解鎖碼</a><a href="#faq">常見問題</a><a href="#start">聯絡我們</a><a href="#member">已有解鎖碼</a>
+    </nav>
+    <a class="btn sm" href="#plans">取得解鎖碼</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap herogrid">
+      <div>
+        <div class="kicker" style="color:var(--ink);font-size:14px;font-weight:800">財金一丙 林言樵 製</div>
+        <div class="kicker" style="margin-top:6px">會計 · 財務數學 · 英文 · 經濟學</div>
+        <h1>財金系<br>大一刷題網站</h1>
+        <p style="font-size:clamp(22px,3.6vw,34px);font-weight:900;margin-top:14px;line-height:1.3">你的<em>學分救星</em>！</p>
+        <p class="sub">會計、財務數學、英文、經濟學共 1,044 題，一支手機就能刷。每題答錯都有中文解析，錯題自動收進錯題集，再用弱點排行告訴你下一個該練哪裡。</p>
+        <div class="cta">
+          <a class="btn" href="#demo">先試做一題</a>
+          <a class="btn ghost" href="#plans">取得解鎖碼</a>
+          <a class="btn ghost" href="#term">這學期什麼時候考？</a>
+        </div>
+      </div>
+      <div>
+        <div class="omr" role="img" aria-label="答案卡示意：十題中有一題答錯，畫面會標出你選的答案和正解，並連到解析">
+          <div class="omrhead"><b>答案卡</b><span>A B C D</span></div>
+          <div class="omrcols" id="omr"></div>
+          <div class="omrlegend">
+            <span><i class="bub on"></i>答對</span>
+            <span><i class="bub no"></i>你選的</span>
+            <span><i class="bub ok"></i>正解</span>
+          </div>
+          <div class="omrnote"><b>第 4 題答錯</b>，馬上看到為什麼錯，這題也會進錯題集。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="strip">
+    <div class="wrap">
+      <div class="it"><b>1,044</b><span>題，四科合計（已去除重複）</span></div>
+      <div class="it"><b>75</b><span>張觀念卡（經濟學 + 財數）</span></div>
+      <div class="it"><b>176</b><span>個中英對照名詞</span></div>
+      <div class="it"><b>4</b><span>科，手機直接開</span></div>
+    </div>
+  </div>
+
+  <section id="term" class="term">
+    <div class="wrap">
+      <div class="sechead">
+        <div class="kicker" id="termWeek">115 學年度上學期</div>
+        <h2>這學期什麼時候考、什麼時候交？</h2>
+        <p class="lede">整理自各科課程大綱和英文老師的 Canva 講義。標「暫定」的是大綱預排，實際以老師公告為準。每天更新的作業、小考和各科進度在「學習攻略」。</p>
+      </div>
+      <div class="termgrid">
+        <div class="countbox">
+          <div class="kicker" id="nextLabel">下一個考試或截止</div>
+          <div class="big" id="nextDays">—</div>
+          <p id="nextWhat"></p>
+          <a class="btn" href="https://claude.ai/artifact/AQ4zrnawFSCG24yXjxJG2N" target="_blank" rel="noopener">打開學習攻略 ↗</a>
+          <p class="note">學習攻略有每天的作業、小考、各科本週進度，也可以補充或回報錯誤。第一次打開要先跟林言樵拿權限。</p>
+        </div>
+        <div class="exams" id="exams"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sechead">
+        <div class="kicker">為什麼做這個</div>
+        <h2>刷題最怕這三件事</h2>
+      </div>
+      <div class="pains">
+        <div class="pain">
+          <h3>答錯了，卻不知道為什麼</h3>
+          <p>只看到「正解是 C」，下次遇到同一個觀念還是會錯。</p>
+          <div class="fix">→ 每個選項都有解析、常見陷阱和一句話重點</div>
+        </div>
+        <div class="pain">
+          <h3>英文題幹看一半就放棄</h3>
+          <p>會計和英文課的題目是英文，看不懂就沒辦法練觀念。</p>
+          <div class="fix">→ 一鍵切中文，答錯附翻譯、單字和原文線索</div>
+        </div>
+        <div class="pain">
+          <h3>不知道先讀哪一章</h3>
+          <p>四科同時考，時間有限，每科都想全部讀完根本來不及。</p>
+          <div class="fix">→ 弱點排行與章節進度，直接告訴你下一步</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="loop" style="background:var(--paper-2)">
+    <div class="wrap">
+      <div class="sechead">
+        <div class="kicker">學習流程</div>
+        <h2>答錯之後，系統幫你接手</h2>
+        <p class="lede">刷題的重點不是答對幾題，而是答錯的題目有沒有真的補起來。這套題庫把這個流程做成固定的循環。</p>
+      </div>
+      <div class="loopbox">
+        <figure>
+          <div class="flow" role="img" aria-label="流程圖：刷題答錯後看解析，自動收進錯題集，確定會了再按已掌握移出；弱點排行會把你帶回最需要練的題目">
+            <div class="fstep"><span class="fn">STEP 1</span><b>刷題</b><span class="d">選科目與章節，題目隨機出，也可以只練錯題。</span></div>
+            <div class="via"><small>答錯</small><i></i></div>
+            <div class="fstep"><span class="fn">STEP 2</span><b>看解析</b><span class="d">中文翻譯、為什麼錯、常見陷阱、一句話重點。</span></div>
+            <div class="via"><small>自動收進</small><i></i></div>
+            <div class="fstep"><span class="fn">STEP 3</span><b>錯題集</b><span class="d">答錯的題目留在這裡，隨時重做，數字題保留當時的數字。</span></div>
+            <div class="via"><small>確定會了<br>按「已掌握」</small><i></i></div>
+            <div class="fstep end"><span class="fn">STEP 4</span><b>移出錯題集</b><span class="d">由你決定什麼時候算會，不會因為蒙對一次就消失。</span></div>
+          </div>
+          <div class="loopback">
+            <svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10a9 9 0 1 0 1.5 6"/><path d="M22.5 4v6.5H16"/></svg>
+            <div><b>弱點排行，把你帶回最需要練的地方</b><span>各主題的答錯率由高到低排列，點進去就直接練那一個主題，不用自己翻章節找。</span></div>
+          </div>
+          <figcaption class="lede" style="font-size:13.5px;margin-top:14px;max-width:none">圖：從刷題到錯題集再到移出的四個步驟，以及回到刷題的弱點排行。</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="demo">
+    <div class="wrap">
+      <div class="sechead">
+        <div class="kicker">真的可以點</div>
+        <h2>選一科，做一題，看看答錯會怎樣</h2>
+        <p class="lede">右邊是四科各一題真實題目的示意畫面。故意選錯看看，解析長什麼樣子。</p>
+      </div>
+      <div class="demogrid">
+        <div>
+          <div class="tabs" role="tablist" id="tabs"></div>
+          <ul class="seewhat" id="seewhat"></ul>
+          <p class="demohint">示意畫面，實際介面請進入各科刷題頁。</p>
+        </div>
+        <div class="phone"><div class="screen" id="screen" aria-live="polite"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="size" style="background:var(--paper-2)">
+    <div class="wrap">
+      <div class="sechead">
+        <div class="kicker">題庫規模</div>
+        <h2>四科加起來 1,044 題</h2>
+        <p class="lede">條的長度代表題數，深淺代表題型或章節。經濟學的題庫最完整，因為包含老師題庫。同一題出現兩次的只算一題。</p>
+      </div>
+      <div class="chartcard">
+        <div id="bars" role="img" aria-label="各科題數與題型組成的橫條圖：經濟學 637、英文 176、會計 146、財務數學 85"></div>
+        <details class="tbl">
+          <summary>用表格看數字</summary>
+          <div class="tblwrap"><table id="bartbl"></table></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sechead">
+        <div class="kicker">章節覆蓋</div>
+        <h2>每一章都有題，沒有空白</h2>
+        <p class="lede">每個方塊是一章，數字是題數（會計含課本習題）。同一科之內，顏色越深代表題數越多。</p>
+      </div>
+      <div class="chartcard">
+        <div class="heatgrid" id="heat"></div>
+        <div class="heatkey"><span>少</span><i></i><span>多</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="subjects" style="padding-top:0">
+    <div class="wrap">
+      <div class="sechead">
+        <div class="kicker">四科內容</div>
+        <h2>每一科裡面有什麼</h2>
+      </div>
+      <div class="subjects" id="subjlist"></div>
+    </div>
+  </section>
+
+  <section id="econ" class="exc">
+    <div class="wrap">
+      <div class="kicker">只有這裡有</div>
+      <h2>經濟學專區：老師題庫與長姊題庫</h2>
+      <p class="lede">經濟學這科，題庫裡八成以上是老師專區的內容，另外還有長姊留下的老師題庫。</p>
+      <div class="excgrid">
+        <div class="panel">
+          <h3>637 題從哪裡來</h3>
+          <div class="comp" role="img" aria-label="經濟學 637 題組成：老師題庫 453 題、老師解答 88 題、課本與即席測驗 96 題">
+            <i class="a" style="flex:453" title="老師題庫 453">453</i>
+            <i class="b" style="flex:88" title="老師解答 88">88</i>
+            <i class="c" style="flex:96" title="課本與即席測驗 96">96</i>
+          </div>
+          <div class="complabels">
+            <div><b>老師題庫</b>單選、是非、繪圖是非</div>
+            <div><b>老師解答</b>複習題</div>
+            <div><b>課本與即席</b>課本題目</div>
+          </div>
+          <div class="excfacts">
+            <div><b>299</b>單選題</div>
+            <div><b>200</b>是非題</div>
+            <div><b>138</b>申論題，附得分要點自評</div>
+            <div><b>28</b>題要看供需圖判斷的繪圖題</div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>要看圖的題目長這樣</h3>
+          <figure class="gfig">
+            <svg viewBox="0 0 300 220" role="img" aria-label="供需圖：價格上限低於均衡價格，在上限價格處需求量大於供給量，形成短缺">
+              <g stroke="currentColor" stroke-width="1.4" fill="none">
+                <path d="M40 16V180H284"/>
+              </g>
+              <g font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor">
+                <text x="14" y="22">P</text><text x="276" y="198">Q</text>
+              </g>
+              <line x1="50" y1="30" x2="270" y2="170" stroke="currentColor" stroke-width="2.6"/>
+              <line x1="50" y1="170" x2="270" y2="30" stroke="currentColor" stroke-width="2.6" opacity=".5"/>
+              <text x="274" y="176" font-family="Noto Sans TC, sans-serif" font-size="12" font-weight="700" fill="currentColor">D</text>
+              <text x="274" y="34" font-family="Noto Sans TC, sans-serif" font-size="12" font-weight="700" fill="currentColor" opacity=".6">S</text>
+              <circle cx="160" cy="100" r="3.6" fill="currentColor"/>
+              <line x1="40" y1="140" x2="284" y2="140" stroke="currentColor" stroke-width="1.4" stroke-dasharray="5 4"/>
+              <text x="190" y="134" font-family="Noto Sans TC, sans-serif" font-size="11.5" font-weight="700" fill="currentColor">價格上限</text>
+              <line x1="97" y1="140" x2="97" y2="180" stroke="currentColor" stroke-width="1" stroke-dasharray="2 3"/>
+              <line x1="223" y1="140" x2="223" y2="180" stroke="currentColor" stroke-width="1" stroke-dasharray="2 3"/>
+              <line x1="97" y1="196" x2="223" y2="196" stroke="currentColor" stroke-width="1.4"/>
+              <line x1="97" y1="191" x2="97" y2="201" stroke="currentColor" stroke-width="1.4"/>
+              <line x1="223" y1="191" x2="223" y2="201" stroke="currentColor" stroke-width="1.4"/>
+              <text x="160" y="213" text-anchor="middle" font-family="Noto Sans TC, sans-serif" font-size="12" font-weight="700" fill="currentColor">短缺</text>
+            </svg>
+            <figcaption>圖：價格上限低於均衡價格時，需求量大於供給量。題庫裡有 28 題要自己看圖判斷，答錯會講清楚圖上哪裡看錯。</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="panel senior">
+        <div class="pass" aria-hidden="true"><i>長姊</i><hr><i class="me">你</i></div>
+        <div>
+          <h3>長姊留下的老師題庫</h3>
+          <ul>
+            <li>長姊修課時拿到的老師題庫，整理進來給你練</li>
+            <li>和經濟學題庫放在一起，不用另外找資料</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sechead">
+        <div class="kicker">功能總覽</div>
+        <h2>四科共用的功能</h2>
+      </div>
+      <div class="feat">
+        <div class="f"><span class="tg">解析</span><h3>每個選項都說明為什麼</h3><p>不只告訴你正解，連你可能選錯的那個選項為什麼不對也寫出來（經濟學）。</p></div>
+        <div class="f"><span class="tg">翻譯</span><h3>答錯就給中文翻譯</h3><p>英文題附中文題目、中文答案和關鍵單字，會計與英文都能切換中英文閱讀。</p></div>
+        <div class="f"><span class="tg">批改</span><h3>計算題自動批改</h3><p>財務數學輸入答案就知道對不對，並列出計算步驟和常見陷阱。</p></div>
+        <div class="f"><span class="tg">隨機</span><h3>隨機題與隨機數字</h3><p>題目順序隨機，財數的計算題連數字都會換，背不起來，只能真的會算。</p></div>
+        <div class="f"><span class="tg">錯題集</span><h3>錯題自動收集</h3><p>答錯的題目留下來反覆練，確定會了才按「已掌握」。</p></div>
+        <div class="f"><span class="tg">弱點</span><h3>弱點主題排行</h3><p>依答錯率排出最弱的主題，一鍵進入練習。</p></div>
+        <div class="f"><span class="tg">進度</span><h3>章節篩選與進度</h3><p>只練指定章節，每章看得到做了多少，期中範圍考到哪就練到哪。</p></div>
+        <div class="f"><span class="tg">觀念卡</span><h3>先學會再刷題</h3><p>經濟學 40 張、財數 35 張觀念卡，附白話一句話版本與學習路線。</p></div>
+        <div class="f"><span class="tg">名詞</span><h3>中英對照名詞庫</h3><p>經濟學 103 個、財數 73 個名詞，搜尋就查得到。</p></div>
+        <div class="f"><span class="tg">工具</span><h3>財數計算工具</h3><p>對答案、看攤銷表、畫 NPV 曲線，算完馬上驗證。</p></div>
+        <div class="f"><span class="tg">英文</span><h3>閱讀與聽力</h3><p>閱讀題附原文線索與全文翻譯，聽力題可以直接播放。</p></div>
+        <div class="f"><span class="tg">手機</span><h3>手機優先，單手就能刷</h3><p>開瀏覽器就能用，不用安裝，通勤、排隊的零碎時間都能練。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--paper-2)">
+    <div class="wrap">
+      <div class="sechead">
+        <div class="kicker">適不適合你</div>
+        <h2>先說清楚誰適合、誰不適合</h2>
+      </div>
+      <div class="fit">
+        <div>
+          <h3>適合</h3>
+          <ul>
+            <li><b>＋</b>期中、期末前想快速找出自己哪裡不會</li>
+            <li><b>＋</b>只有零碎時間，每天晚上要分配給好幾科</li>
+            <li><b>＋</b>看英文題目吃力，需要中文翻譯輔助</li>
+            <li><b>＋</b>想用老師題庫與長姊留下的題庫，練習更貼近課堂</li>
+          </ul>
+        </div>
+        <div class="no">
+          <h3>不適合</h3>
+          <ul>
+            <li><b>－</b>想要保證及格或保證分數</li>
+            <li><b>－</b>打算完全不上課，只靠題庫</li>
+            <li><b>－</b>不願意花時間看解析，只想對答案</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="plans" style="background:var(--paper-2)">
+    <div class="wrap">
+      <div class="sechead">
+        <div class="kicker">解鎖碼</div>
+        <h2>拿到解鎖碼就能用，不用註冊</h2>
+        <p class="lede" id="planNote"></p>
+      </div>
+      <ol class="how">
+        <li><b>聯絡</b><span>私訊 <a href="https://www.instagram.com/_.xeylz?exln=MXE5eGV0M2E1Zmd4cA%3D%3D&amp;utm_source=qr" target="_blank" rel="noopener">IG</a>，告訴我們你要用哪一科。</span></li>
+        <li><b>拿解鎖碼</b><span>確認後給你一組解鎖碼，打開刷題頁輸入一次就能用，不用註冊或登入。</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <div class="sechead">
+        <div class="kicker">常見問題</div>
+        <h2>先回答你可能會問的</h2>
+      </div>
+      <div class="faq">
+        <details><summary>需要安裝或註冊嗎？</summary><p>都不用。用手機或電腦的瀏覽器打開連結，輸入解鎖碼就能刷題，同一台裝置輸入一次就會記住。</p></details>
+        <details><summary>解鎖碼可以給朋友用嗎？</summary><p>不行，一組碼只給一個人。發現外流的碼會被停用。</p></details>
+        <details><summary>題目是從哪裡來的？</summary><p>經濟學來自老師題庫、老師解答、課本的即席測驗與問題；財務數學來自講義、投影片與練習題；會計是英文教科書題庫（第 2 至 4 章）；英文涵蓋 U1 友誼與 U2 工作兩個單元的單字、閱讀與聽力。</p></details>
+        <details><summary>會保證考高分嗎？</summary><p>不保證。這是練習和找弱點的工具，幫你把時間花在最需要補的地方，成績仍取決於你有沒有認真看解析、把錯題補起來。</p></details>
+        <details><summary>只有期中範圍嗎？</summary><p>目前涵蓋經濟學第 1 至 7 章、財務數學第 1 至 6 章、會計 CH2 至 CH4、英文 U1 至 U2。後續章節會隨課程進度補上。</p></details>
+        <details><summary>發現題目或解析有錯怎麼辦？</summary><p>請直接回報給整理者，確認後會更新題庫。</p></details>
+        <details><summary>要怎麼取得解鎖碼？</summary><p id="accessAnswer"></p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="final" id="start">
+    <div class="wrap">
+      <div class="kicker" style="color:var(--acc-ink);opacity:.8">開始刷題</div>
+      <h2>今晚就從一科開始</h2>
+      <p>跟我們拿解鎖碼，從最近要考的那一科開始。</p>
+      <div class="applinks" id="applinks"></div>
+      <p class="contact" id="contact"></p>
+    </div>
+  </section>
+
+  <section id="member" class="member">
+    <div class="wrap">
+      <div class="kicker">已有解鎖碼</div>
+      <h2>有解鎖碼了？從這裡進入</h2>
+      <p class="lede">點你要用的科目，第一次打開時輸入解鎖碼，同一台裝置之後會自動解鎖。建議把這個頁面加入書籤。</p>
+      <div class="memberlinks" id="memberlinks"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    本站為學習輔助工具，與銘傳大學及授課老師無關，題目與解析僅供練習，不保證考試成績。考試日期以老師公告為準。<br>財金一丙 林言樵 製　·　<a href="https://claude.ai/artifact/AQ4zrnawFSCG24yXjxJG2N" target="_blank" rel="noopener">財金一丙 學習攻略</a>
+  </div>
+</footer>
+
+<script>
+  // 要改的設定都在這裡。
+  const CONFIG = {
+    // 刷題頁有解鎖碼保護，連結可以公開。
+    apps: {
+      econ: { name: '經濟學', url: 'https://claude.ai/artifact/GhSVtoRqrfQKTQSh2Xzmoi' },
+      fin:  { name: '財務數學', url: 'https://claude.ai/artifact/GudQGkNNnCcnqdkLpAAsJ3' },
+      acc:  { name: '會計', url: 'https://claude.ai/artifact/KLQjb3dffbZxx4Uo3bqbyZ' },
+      eng:  { name: '英文', url: 'https://claude.ai/artifact/Bi1XHGASfC8c9bxGzJG1wS' }
+    },
+    contact: { label: 'IG 私訊', url: 'https://www.instagram.com/_.xeylz?exln=MXE5eGV0M2E1Zmd4cA%3D%3D&utm_source=qr' },
+  };
+
+  // ---------- hero answer card ----------
+  (function(){
+    const picks = [1,0,3,1,2, 2,0,1,3,2];   // 作答
+    const wrongIdx = 3, correctOf = {3:2};  // 第 4 題答錯，正解 C
+    const box = document.getElementById('omr');
+    let html = '';
+    picks.forEach((p,i)=>{
+      let b = '';
+      for(let k=0;k<4;k++){
+        let cls = 'bub';
+        if(i===wrongIdx){ if(k===p) cls += ' no'; else if(k===correctOf[i]) cls += ' ok'; }
+        else if(k===p) cls += ' on';
+        b += `<i class="${cls}" style="--d:${(i*0.07).toFixed(2)}s"></i>`;
+      }
+      html += `<div class="omrrow"><span class="n">${i+1}</span><span class="bubbles">${b}</span></div>`;
+    });
+    box.innerHTML = html;
+  })();
+
+  // ---------- demo ----------
+  const DEMOS = [
+    { id:'econ', tab:'經濟學', tag:'經濟學 · Ch1 即席測驗 #2', type:'mc',
+      q:'你去看電影的機會成本為',
+      opts:[
+        {t:'電影票價。', why:'只算到金錢支出，漏掉了看電影這 2 小時本來可以做其他事的價值。'},
+        {t:'電影票價加上可樂與爆米花的支出。', why:'可樂爆米花是額外的花費，但仍然漏掉時間成本。'},
+        {t:'去看電影的所有花費加上你的時間成本。', why:''},
+        {t:'零，只要你覺得電影值回票價。', why:'「值回票價」是說效益大於成本，不代表成本是零。'}
+      ], ans:2,
+      steps:['問自己：去看電影，我放棄了什麼？','第一，錢：票價以及因為看電影才會花的錢。','第二，時間：這 2 小時本來可以打工、讀書、休息。','所以機會成本＝所有花費＋時間成本。'],
+      trap:'很多人只算金錢、忘了時間。經濟學的成本永遠要想「放棄了什麼」。',
+      key:'機會成本問的是「我放棄了什麼」，時間也是成本。',
+      see:['選項選錯時，先告訴你「你選的」錯在哪','三到四步的解題思路，不只是答案','常見陷阱和一句話重點，考前掃一遍就夠']
+    },
+    { id:'acc', tab:'會計', tag:'會計 · TB2 Q52', type:'mc',
+      q:'If a company has $528,000 of service revenue, pays $26,400 in dividends, and has net income of $158,400, how much were the expenses for the year?',
+      zh:'若某公司勞務收入為 $528,000，發放股利 $26,400，淨利為 $158,400，則當年度的費用為多少？',
+      opts:[{t:'$343,200'},{t:'$422,400'},{t:'$396,000'},{t:'$369,600'}], ans:3,
+      exp:'淨利 ＝ 收入 − 費用，所以 費用 ＝ 528,000 − 158,400 ＝ $369,600。股利是盈餘的分配，不是費用，計算淨利時完全不能扣。這是最常見的陷阱。',
+      vocab:[['service revenue','勞務收入'],['net income','淨利'],['dividends','股利'],['expenses','費用']],
+      see:['英文題目，答錯才給中文題目和中文答案','關鍵單字一次整理好，順便背專有名詞','解析點出最常見的陷阱']
+    },
+    { id:'eng', tab:'英文', tag:'英文 · U1-7 單字 #1', type:'mc',
+      q:'She pushed herself ------ her limits and achieved great success.',
+      zh:'她逼自己超越極限，並取得了巨大的成功。',
+      opts:[{t:'currently',z:'目前'},{t:'beyond',z:'超越'},{t:'tightly',z:'緊緊地'},{t:'fully',z:'完全地'}], ans:1,
+      exp:'push oneself beyond one’s limits＝逼自己超越極限。beyond 是介系詞，意思是「超出…的範圍」，後面才能接 her limits；其他三個都是副詞，不能直接接名詞。',
+      vocab:[['beyond','超出、超越'],['limit','極限'],['currently','目前'],['tightly','緊緊地']],
+      see:['每個選項都附中文意思','解析說明為什麼其他選項的詞性不對','閱讀題另有原文線索，教你回頭找證據']
+    },
+    { id:'fin', tab:'財務數學', tag:'財務數學 · Ch1 計算題', type:'num',
+      q:'本金 8,000 元，名目年利率 5%，每月複利，4 年後的終值是多少？',
+      ans:9767.16, tol:0.5,
+      steps:['每期利率 r/m ＝ 0.05 ÷ 12','總期數 mn ＝ 12 × 4 ＝ 48','FV ＝ 8,000 × (1 + 0.05/12)^48 ＝ 9,767.16'],
+      trap:'月複利 4 年，指數是 mn ＝ 48，不是 4。只算一年的利率卻用年數當指數，是最常見的錯。',
+      see:['輸入答案馬上批改，差一點點也算對（容許四捨五入）','列出每一步的算式，不是只給最後數字','同一題型可以隨機換數字，練到會為止']
+    }
+  ];
+  let dIdx = 0, picked = null;
+
+  function renderTabs(){
+    const t = document.getElementById('tabs');
+    t.innerHTML = DEMOS.map((d,i)=>`<button class="tab" role="tab" aria-selected="${i===dIdx}" data-i="${i}">${d.tab}</button>`).join('');
+    t.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{dIdx=+b.dataset.i;picked=null;renderTabs();renderDemo();}));
+    document.getElementById('seewhat').innerHTML = DEMOS[dIdx].see.map(s=>`<li>${s}</li>`).join('');
+  }
+  const L = ['A','B','C','D'];
+  function renderDemo(){
+    const d = DEMOS[dIdx], s = document.getElementById('screen');
+    const answered = picked !== null;
+    let h = `<div class="sbar"><span>${d.tag}</span><b>第 3 / 20 題</b></div><div class="sprog"><i></i></div>`;
+    h += `<div class="sq">${d.q}${(d.zh && answered) ? `<small>${d.zh}</small>` : ''}</div>`;
+    if(d.type==='mc'){
+      h += '<div class="sopts">' + d.opts.map((o,i)=>{
+        let c = 'sopt';
+        if(answered){ if(i===d.ans) c+=' correct'; else if(i===picked) c+=' wrong'; else c+=' dim'; }
+        return `<button class="${c}" data-i="${i}" ${answered?'disabled':''}><span class="l">${L[i]}</span><span>${o.t}${(answered && o.z)?` <small style="color:var(--mute)">${o.z}</small>`:''}</span></button>`;
+      }).join('') + '</div>';
+      if(answered){
+        const ok = picked===d.ans;
+        h += `<div class="fb ${ok?'ok':'bad'}">${ok?'答對了':'答錯了，正解是 '+L[d.ans]}</div>`;
+        if(d.id==='econ'){
+          if(!ok) h += `<div class="xb you"><span class="t">你選的</span>${d.opts[picked].t}<br>${d.opts[picked].why}</div>`;
+          h += `<div class="xb"><span class="t">解題思路</span><ol>${d.steps.map(x=>`<li>${x}</li>`).join('')}</ol></div>`;
+          h += `<div class="xb"><span class="t">常見陷阱</span>${d.trap}</div>`;
+          h += `<div class="xb key"><span class="t">一句話重點</span>${d.key}</div>`;
+        } else {
+          h += `<div class="xb"><span class="t">中文解析</span>${d.exp}<div class="chips">${d.vocab.map(v=>`<span><b>${v[0]}</b>${v[1]}</span>`).join('')}</div></div>`;
+        }
+        if(!ok) h += `<div class="xb" style="background:var(--acc-soft);border-color:transparent"><span class="t">已收進錯題集</span>下次可以只練錯題，確定會了再按「已掌握」。</div>`;
+        h += `<button class="redo" id="redo">↺ 重做這題</button>`;
+      }
+    } else {
+      h += `<div class="numrow"><input id="numin" inputmode="decimal" placeholder="輸入答案，例如 9000" aria-label="你的答案" ${answered?'disabled':''} value="${answered?picked:''}"><button id="numgo" ${answered?'disabled':''}>批改</button></div>`;
+      if(answered){
+        const v = parseFloat(String(picked).replace(/,/g,'')); const ok = Math.abs(v - d.ans) <= d.tol;
+        h += `<div class="fb ${ok?'ok':'bad'}">${ok?'答對了':'答錯了，正解是 9,767.16'}</div>`;
+        h += `<div class="xb"><span class="t">計算步驟</span><ol>${d.steps.map(x=>`<li>${x}</li>`).join('')}</ol></div>`;
+        h += `<div class="xb"><span class="t">常見陷阱</span>${d.trap}</div>`;
+        if(!ok) h += `<div class="xb" style="background:var(--acc-soft);border-color:transparent"><span class="t">已收進錯題集</span>下次重做時會保留這次的數字。</div>`;
+        h += `<button class="redo" id="redo">↺ 重做這題</button>`;
+      }
+    }
+    s.innerHTML = h;
+    s.querySelectorAll('.sopt').forEach(b=>b.addEventListener('click',()=>{picked=+b.dataset.i;renderDemo();}));
+    const go = s.querySelector('#numgo');
+    if(go){
+      const inp = s.querySelector('#numin');
+      const run = ()=>{ if(inp.value.trim()===''||isNaN(parseFloat(inp.value.replace(/,/g,'')))) return; picked = inp.value.trim(); renderDemo(); };
+      go.addEventListener('click',run);
+      inp.addEventListener('keydown',e=>{if(e.key==='Enter')run();});
+    }
+    const redo = s.querySelector('#redo');
+    if(redo) redo.addEventListener('click',()=>{picked=null;renderDemo();});
+  }
+  renderTabs(); renderDemo();
+
+  // ---------- bars ----------
+  const BARS = [
+    { nm:'經濟學', sub:'Mankiw 第 1–7 章', total:637, segs:[['單選',299],['是非',200],['申論',138]] },
+    { nm:'英文', sub:'U1 友誼、U2 工作', total:176, segs:[['單字',65],['閱讀',51],['聽力',60]] },
+    { nm:'會計', sub:'英文選擇題＋課本習題', total:146, segs:[['選擇題',86],['課本習題',60]] },
+    { nm:'財務數學', sub:'Ch1–6', total:85, segs:[['選擇',40],['計算',39],['申論',6]] }
+  ];
+  (function(){
+    const max = 637;
+    const fmt = n=>n.toLocaleString('en-US');
+    document.getElementById('bars').innerHTML = BARS.map(r=>{
+      const w = r.total/max*100;
+      const segs = r.segs.map((s,i)=>`<i style="flex:${s[1]}" title="${r.nm} ${s[0]} ${s[1]} 題"></i>`).join('');
+      const leg = r.segs.map((s,i)=>`<span style="--c:var(--t${i+1})">${s[0]} <b>${s[1]}</b></span>`).join('');
+      return `<div class="crow"><div class="nm">${r.nm}<small>${r.sub}</small></div><div class="barcol"><div class="bar" style="width:${Math.max(w,6)}%">${segs}</div><div class="leg">${leg}</div></div><div class="tot">${fmt(r.total)}</div></div>`;
+    }).join('');
+    document.getElementById('bartbl').innerHTML = '<tr><th>科目</th><th>分項</th><th>題數</th></tr>' +
+      BARS.map(r=>`<tr><td>${r.nm}</td><td>${r.segs.map(s=>s[0]+' '+s[1]).join(' · ')}</td><td>${r.total}</td></tr>`).join('');
+  })();
+
+  // ---------- heat ----------
+  const HEAT = [
+    { nm:'經濟學', t:[['Ch1',94],['Ch2',83],['Ch3',85],['Ch4',97],['Ch5',95],['Ch6',96],['Ch7',87]] },
+    { nm:'財務數學', t:[['Ch1',16],['Ch2',14],['Ch3',16],['Ch4',13],['Ch5',13],['Ch6',13]] },
+    { nm:'會計', t:[['CH2',35],['CH3',52],['CH4',59]] },
+    { nm:'英文', t:[['U1 單字',34],['U1 閱讀',28],['U2 單字',31],['U2 閱讀',23],['聽力',60]] }
+  ];
+  (function(){
+    // 各科各自用自己的最大值上色，這樣小科目也看得出章節之間的差別。
+    document.getElementById('heat').innerHTML = HEAT.map(r=>{
+      const mx = Math.max(...r.t.map(x=>x[1])), mn = Math.min(...r.t.map(x=>x[1]));
+      const tiles = r.t.map(x=>{
+        const p = mx===mn ? 0.6 : 0.15 + 0.85*(x[1]-mn)/(mx-mn);
+        const dark = p > 0.55;
+        return `<div class="tile" title="${r.nm} ${x[0]}：${x[1]} 題" style="background:color-mix(in srgb, var(--acc) ${Math.round(p*100)}%, var(--card));color:${dark?'var(--acc-ink)':'var(--ink)'}"><small>${x[0]}</small><b>${x[1]}</b></div>`;
+      }).join('');
+      return `<div class="hrow"><div class="nm">${r.nm}</div><div class="tiles">${tiles}</div></div>`;
+    }).join('');
+  })();
+
+  // ---------- subjects ----------
+  const SUBJ = [
+    { id:'econ', h:'經濟學', scope:'MANKIW · CH1–7', num:'637', unit:'題', items:[
+      ['hot','老師專區：老師題庫 453 題、老師解答 88 題'],
+      ['hot','長姊留下的老師題庫'],
+      ['','單選、是非、申論三種題型，申論題附得分要點讓你自評'],
+      ['','28 題要看供需圖判斷的繪圖題'],
+      ['','40 張觀念卡、103 個中英名詞、每章學習路線'],
+      ['','老師專區有「考前優先練習」入口']] },
+    { id:'fin', h:'財務數學', scope:'CH1–6 · 貨幣時間價值到投資組合', num:'85', unit:'題', items:[
+      ['hot','計算題自動批改，並列出每一步算式'],
+      ['hot','隨機計算題，數字每次都不一樣'],
+      ['','選擇題 40、計算題 39、申論題 6'],
+      ['','35 張觀念卡、73 個名詞、六章學習路線'],
+      ['','計算工具：對答案、看攤銷表、NPV 曲線'],
+      ['','每章連到講義、投影片與互動練習']] },
+    { id:'acc', h:'會計', scope:'TB2–TB4 · CH2–CH4', num:'146', unit:'題', items:[
+      ['hot','英文選擇題 86 題，答錯才顯示中文題目與中文答案'],
+      ['hot','課本習題區 60 題（和選擇題庫分開）：計算、編表、分錄，附解題邏輯、計算過程與完整解答'],
+      ['','每個選項附中文，解析點出最常見的陷阱'],
+      ['','關鍵單字與專有名詞一次整理'],
+      ['','可切換英文、中文閱讀'],
+      ['','錯題集與弱點主題排行']] },
+    { id:'eng', h:'英文', scope:'U1 友誼 · U2 工作', num:'176', unit:'題', items:[
+      ['hot','閱讀 51 題，答錯會指出原文線索，並附全文翻譯'],
+      ['hot','聽力 60 題，可直接播放音檔'],
+      ['','單字 65 題，每個選項附中文意思'],
+      ['','答錯附中文翻譯、關鍵單字與詞性說明'],
+      ['','錯題集與弱點主題排行']] }
+  ];
+  document.getElementById('subjlist').innerHTML = SUBJ.map(s=>`
+    <div class="subj">
+      <div><h3>${s.h}</h3><div class="scope">${s.scope}</div><div class="num">${s.num}<small>${s.unit}</small></div></div>
+      <ul>${s.items.map(i=>`<li class="${i[0]}">${i[1]}</li>`).join('')}</ul>
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-start"><a class="btn sm" href="${CONFIG.apps[s.id].url}" target="_blank" rel="noopener">有解鎖碼，進入</a></div>
+    </div>`).join('');
+
+
+  // ---------- semester timeline ----------
+  // 日期整理自 115-1 課程大綱與英文老師講義；學期第 1 週從 2026/9/7（週一）開始。
+  const TERM_START = new Date(2026, 8, 7);
+  const TERM = [
+    { g:'期中', items:[
+      ['2026-11-03','會計','期中考'], ['2026-11-03','親密關係（通識）','期中專題報告'],
+      ['2026-11-04','AI 概論','期中考（上機）'], ['2026-11-04','文賞','期中考'],
+      ['2026-11-05','財務數學','期中考','暫定'], ['2026-11-05','經濟學','期中考'],
+      ['2026-11-06','管理（通識）','期中簡報會'],
+      ['2026-11-02','英文','Midterm-1（第 9 週，依上課日）'], ['2026-11-09','英文','Midterm-2（第 10 週，取高分）'] ] },
+    { g:'期末與學期末繳交', items:[
+      ['2026-12-14','英文','Final-1（第 15 週，依上課日）'], ['2026-12-21','英文','Final-2（第 16 週，取高分）'],
+      ['2026-12-22','會計','期末考'], ['2026-12-23','文賞','期末考'], ['2026-12-23','AI 概論','專題或期末考','暫定'],
+      ['2026-12-24','財務數學','期末考','暫定'], ['2026-12-25','英文','文法作業截止 23:59'],
+      ['2027-01-03','財務數學','自主學習進度摘要','暫定'], ['2027-01-05','親密關係（通識）','期末考'],
+      ['2027-01-06','英文','彈性學習週作業截止 23:59'], ['2027-01-06','文賞','〈斯干〉AI 短影音'],
+      ['2027-01-07','經濟學','期末考'], ['2027-01-08','管理（通識）','期末專題報告'],
+      ['2027-01-10','財務數學','自主學習英文報告','暫定'] ] }
+  ];
+  (function(){
+    const t0 = new Date(); t0.setHours(0,0,0,0);
+    const WD = ['日','一','二','三','四','五','六'];
+    const pd = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
+    const days = d => Math.round((d - t0) / 864e5);
+    const all = [];
+    const html = TERM.map(g => {
+      const rows = g.items.slice().sort((a,b) => a[0].localeCompare(b[0])).map(([ds, subj, what, tent]) => {
+        const d = pd(ds), n = days(d);
+        all.push({ d, n, subj, what });
+        const left = n < 0 ? '已過' : n === 0 ? '今天' : `${n} 天後`;
+        return `<li class="${n < 0 ? 'past' : n <= 7 ? 'soon' : ''}"><span class="d">${d.getMonth()+1}/${d.getDate()}（${WD[d.getDay()]}）</span><span class="t"><b>${subj}</b> ${what}${tent ? '<small>暫定</small>' : ''}</span><span class="left">${left}</span></li>`;
+      }).join('');
+      return `<h3>${g.g}<span>${g.items.length} 項</span></h3><ul>${rows}</ul>`;
+    }).join('');
+    document.getElementById('exams').innerHTML = html;
+    const wk = Math.floor((t0 - TERM_START) / (7 * 864e5)) + 1;
+    if(wk >= 1 && wk <= 18) document.getElementById('termWeek').textContent = `115 學年度上學期 · 現在是第 ${wk} 週`;
+    const next = all.filter(x => x.n >= 0).sort((a,b) => a.n - b.n)[0];
+    if(next){
+      document.getElementById('nextDays').innerHTML = next.n === 0 ? '今天' : `${next.n}<small>天</small>`;
+      document.getElementById('nextWhat').textContent = `${next.d.getMonth()+1}/${next.d.getDate()}　${next.subj}　${next.what}`;
+    } else {
+      document.getElementById('nextLabel').textContent = '這學期';
+      document.getElementById('nextDays').textContent = '結束';
+      document.getElementById('nextWhat').textContent = '這學期的考試都考完了。';
+    }
+  })();
+
+  // ---------- unlock-code note ----------
+  (function(){
+    const n = document.getElementById('planNote');
+    if(n) n.textContent = '解鎖碼由整理者發給你，一組碼只給一個人。';
+  })();
+
+  // ---------- final cta, faq ----------
+  document.getElementById('memberlinks').innerHTML = Object.values(CONFIG.apps).map(a=>
+    `<a href="${a.url}" target="_blank" rel="noopener">${a.name}<small>進入 →</small></a>`).join('');
+  document.getElementById('applinks').innerHTML =
+    `<a href="#plans">取得解鎖碼<small>向整理者索取</small></a>` +
+    `<a href="#member">已有解鎖碼<small>進入刷題</small></a>`;
+  const contactEl = document.getElementById('contact');
+  const accessEl = document.getElementById('accessAnswer');
+  if(CONFIG.contact){
+    const c = CONFIG.contact;
+    contactEl.innerHTML = `索取解鎖碼或詢問，私訊 <a href="${c.url}" target="_blank" rel="noopener" style="font-weight:900">${c.label}</a>`;
+    accessEl.innerHTML = `私訊 <a href="${c.url}" target="_blank" rel="noopener">${c.label}</a>，確認後會拿到一組解鎖碼，打開刷題頁輸入就能用。`;
+  } else {
+    contactEl.textContent = '想問完整內容或取得方式，直接找把這個頁面傳給你的人。';
+    accessEl.textContent = '直接找把這個頁面傳給你的人，確認後會拿到一組解鎖碼，打開刷題頁輸入就能用。';
+  }
+</script>
+
+</body></html>
