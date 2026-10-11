@@ -232,7 +232,7 @@
 
 <div class="cbar" id="cbar" hidden>
   <div class="wrap">
-    <p>有新消息，或發現哪裡寫錯了？<small>寫一句話就好，每晚 11 點整理更新。</small></p>
+    <p>有新消息，或發現哪裡寫錯了？<small>寫一句話就好，每天早上 7 點整理更新。</small></p>
     <button class="cbtn" id="cbtn">＋ 補充／回報</button>
   </div>
 </div>
@@ -243,7 +243,7 @@
   /* ================= 設定 ================= */
   const DEFAULT_SUBJECTS = ['經濟學', '財務數學', '會計', '英文'];
   const TYPES = { exam:'考試', hw:'作業', report:'報告', quiz:'小考' };
-  const REVIEW_TIME = '每晚 11 點';
+  const REVIEW_TIME = '每天早上 7 點';
 
   /* ================= 工具 ================= */
   const $ = (s, r=document) => r.querySelector(s);
@@ -416,7 +416,7 @@
 
   function openReview(){
     openSheet(`<button class="x" data-close>關閉</button><h3>待你決定</h3>
-      <p class="lede">每晚整理時，Claude 判斷不了或有爭議的投稿會放在這裡。決定後到該筆按「編輯」修改，或請 Claude 處理。</p>
+      <p class="lede">每天早上整理時，Claude 判斷不了或有爭議的投稿會放在這裡。決定後到該筆按「編輯」修改，或請 Claude 處理。</p>
       <ul class="steps">${D.review.map(r => `<li><span><b>${esc(r.summary || '')}</b><br><span class="src">${esc(r.reason || '')}${r.at ? '　' + esc(r.at) : ''}</span></span></li>`).join('')}</ul>
       <div class="msg" id="rvmsg" hidden></div>
       <div class="btns"><button class="btn" id="clearReview">都處理完了，清除</button></div>`);
