@@ -297,6 +297,7 @@
   const DEFAULT_SUBJECTS = ['經濟學', '財務數學', '會計', '英文'];
   const TYPES = { exam:'考試', hw:'作業', report:'報告', quiz:'小考' };
   const REVIEW_TIME = '每天早上 7 點';
+  const per = c => /\d/.test(c.periods || '') ? `${c.periods} 節` : (c.periods || '');
   const PRACTICE_URL = 'https://claude.ai/artifact/Ep9BWKGr2FX1bSQ3zxTTNh';
   const SEM_WEEKS = 18;
 
@@ -525,7 +526,7 @@
       const label = i === 0 ? '今天的課' : i === 1 ? '明天的課' : `下次上課：${fmtDate(d)}`;
       const items = list.map(c => {
         const t = (c.weeks || [])[w - 1] || '';
-        return `<li class="${/停課|放假/.test(t) ? 'off' : ''}"><b>${esc(c.short)}</b><span class="mono">${esc(c.periods)} 節 · ${esc(c.room)}</span><span class="tp">${esc(t)}</span></li>`;
+        return `<li class="${/停課|放假|補假/.test(t) ? 'off' : ''}"><b>${esc(c.short)}</b><span class="mono">${esc([per(c), c.room].filter(Boolean).join(' · '))}</span><span class="tp">${esc(t)}</span></li>`;
       }).join('');
       return `<div class="todaybox"><div class="th"><b>${label}</b><span class="mono">第 ${w} 週 · ${weekRange(w)}</span></div><ul>${items}</ul></div>`;
     }
@@ -542,7 +543,7 @@
       <div class="gleg">${g.map((x, i) => `<span><i class="g${i % 3}"></i>${esc(x.k)} <b>${esc(x.v)}%</b></span>`).join('')}</div>` : '';
     const up = events().filter(e => e.subj === c.short && e.days >= 0).slice(0, 2);
     return `<article class="course" id="c-${esc(c.id)}" data-comment-target>
-      <div class="chd"><h3>${esc(c.name)}</h3><div class="cmeta">${esc(c.teacher)}　${c.day != null ? `週${WD[c.day]} ${esc(c.periods)} 節` : esc(c.periods)}　${esc(c.room)}</div></div>
+      <div class="chd"><h3>${esc(c.name)}</h3><div class="cmeta">${esc(c.teacher)}　${c.day != null ? `週${WD[c.day]} ${esc(per(c))}` : esc(per(c))}　${esc(c.room)}</div></div>
       <div class="wkrow">
         <div class="wk now"><span>本週 · 第 ${cur} 週</span><b>${esc(weeks[cur - 1] || '—')}</b></div>
         ${cur < SEM_WEEKS ? `<div class="wk"><span>下週 · 第 ${cur + 1} 週</span><b>${esc(weeks[cur] || '—')}</b></div>` : ''}
