@@ -1,0 +1,885 @@
+<title>投資晨報</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+  /* Layout: single mobile column, sticky four-tab bar, black ground with gold accent (matches the owner's earlier study sites). */
+  :root{
+    color-scheme:dark;
+    --bg:#0A0A0A; --surface:#151514; --surface-2:#1C1C1A; --ink:#EFEDE6; --muted:#8C8A82;
+    --line:rgba(255,255,255,.08); --line-soft:rgba(255,255,255,.05);
+    --accent:#D9C58C; --accent-2:#B79E5F; --accent-ink:#0A0A08; --accent-soft:rgba(217,197,140,.12);
+    --up:#E5705E; --up-bg:rgba(229,112,94,.13);
+    --down:#5FBE7A; --down-bg:rgba(95,190,122,.13);
+    --warn:#D9A35F; --warn-bg:rgba(217,163,95,.13);
+    --shadow:inset 0 1px 0 rgba(255,255,255,.045), 0 1px 2px rgba(0,0,0,.7);
+    --font-display:"Fraunces", Georgia, serif;
+    --font-body:"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono:"JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+    --font-zh:"PingFang TC","Heiti TC","Microsoft JhengHei","Noto Sans CJK TC","Hiragino Sans CNS",sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-zh),var(--font-body);font-size:15px;line-height:1.7;-webkit-tap-highlight-color:transparent}
+  button,input,select,textarea{font:inherit;color:inherit}
+  button{cursor:pointer;border:0;background:none}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .app{max-width:600px;margin:0 auto;padding-inline:16px;padding-block:8px 40px}
+  .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+  .muted{color:var(--muted)}
+
+  header.top{padding-block:14px 6px}
+  .kicker{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-family:var(--font-display),var(--font-zh);font-weight:600;font-size:30px;line-height:1.2;margin:6px 0 0;letter-spacing:-.01em;text-wrap:balance}
+  .sub{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--muted)}
+  .pill{font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2)}
+  .pill.fresh{color:var(--down);background:var(--down-bg);border-color:transparent}
+  .pill.stale{color:var(--warn);background:var(--warn-bg);border-color:transparent}
+
+  nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding-block:10px;margin-top:6px}
+  .tab{padding:10px 4px;border-radius:11px;font-weight:600;font-size:13.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line-soft);white-space:nowrap}
+  .tab[aria-selected="true"]{color:var(--accent);background:var(--accent-soft);border-color:var(--accent)}
+  section.panel{display:flex;flex-direction:column;gap:14px;padding-top:4px}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px;min-width:0}
+  .card.hero{border-color:rgba(217,197,140,.35);background:linear-gradient(180deg,rgba(217,197,140,.07),rgba(217,197,140,.015)),var(--surface)}
+  .lbl{font-size:11.5px;font-weight:700;letter-spacing:.08em;color:var(--accent);margin:0 0 10px;text-transform:uppercase}
+  h3.t{font-size:16px;font-weight:700;margin:0 0 6px;line-height:1.45}
+  .summary{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+  .summary li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline}
+  .summary .n{font-family:var(--font-mono);font-size:12px;color:var(--accent);font-weight:600}
+  .body-text{margin:0 0 12px;color:var(--ink)}
+  .tablewrap{overflow-x:auto;border:1px solid var(--line-soft);border-radius:10px;background:var(--surface-2)}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  th,td{padding:8px 11px;text-align:left;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+  tr:last-child td{border-bottom:0}
+  th{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;color:var(--muted);font-weight:600;text-transform:uppercase}
+  td.num,th.num{text-align:right}
+  .up{color:var(--up)} .down{color:var(--down)}
+  td.note{white-space:normal;min-width:140px;color:var(--muted);font-size:12.5px}
+  .legend{font-size:11.5px;color:var(--muted);margin:8px 2px 0}
+  .pltable th,.pltable td{font-size:12.5px}
+  .pltable td.sticky,.pltable th.sticky{position:sticky;left:0;background:var(--surface-2);z-index:1}
+  .flag{font-size:11px;font-weight:700;padding:1px 7px;border-radius:5px;margin-left:6px;color:var(--accent-ink);background:var(--warn)}
+  .src-tag{font-size:10.5px;color:var(--muted);display:block}
+  .totals{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;font-size:13px}
+  .totals b{font-family:var(--font-mono);font-weight:600}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .grid2>div{min-width:0}
+  .stat{background:var(--surface-2);border:1px solid var(--line-soft);border-radius:12px;padding:10px 12px}
+  .stat .k{font-size:11.5px;color:var(--muted)}
+  .stat .v{font-family:var(--font-mono);font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+
+  .holdrow{display:flex;flex-direction:column;gap:4px;padding:12px 0;border-top:1px solid var(--line-soft)}
+  .holdrow:first-of-type{border-top:0;padding-top:0}
+  .holdhead{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+  .sym{font-family:var(--font-mono);font-weight:600;color:var(--accent)}
+  .watch{font-size:12.5px;color:var(--muted)}
+  .act{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:999px;margin-right:6px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+  .act.add{color:var(--down);background:var(--down-bg);border-color:transparent}
+  .act.trim,.act.exit{color:var(--up);background:var(--up-bg);border-color:transparent}
+  .act.hold{color:var(--accent);background:var(--accent-soft);border-color:transparent}
+  details.more{margin-top:6px;border:1px solid var(--line-soft);border-radius:10px;background:var(--surface-2)}
+  details.more>summary{cursor:pointer;padding:8px 12px;font-size:13px;font-weight:600;color:var(--accent);list-style:none}
+  details.more>summary::-webkit-details-marker{display:none}
+  details.more>summary::before{content:"＋ ";color:var(--muted)}
+  details.more[open]>summary::before{content:"－ "}
+  .dl{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:6px 12px;padding:4px 12px 12px;font-size:13.5px}
+  .dl dt{color:var(--muted);white-space:nowrap}
+  .dl dd{margin:0;min-width:0;overflow-wrap:anywhere}
+  .scen{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 12px 12px}
+  .scen>div{border-radius:10px;padding:8px 10px;font-size:13px;min-width:0}
+  .scen .bull{background:var(--up-bg)} .scen .bear{background:var(--down-bg)}
+  .scen b{display:block;font-size:11.5px}
+  .scen .bull b{color:var(--up)} .scen .bear b{color:var(--down)}
+  .rowbtns{display:flex;gap:6px;flex-wrap:wrap}
+
+  .todo{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:10px;border:1px solid var(--line-soft);background:var(--surface-2);text-align:left;width:100%}
+  .box{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--muted);flex:none;margin-top:3px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent-ink)}
+  .todo[aria-pressed="true"] .box{background:var(--down);border-color:var(--down)}
+  .todo[aria-pressed="true"] span:last-child{color:var(--muted);text-decoration:line-through}
+  .stack{display:flex;flex-direction:column;gap:8px}
+  .src{font-size:12.5px;display:flex;flex-direction:column;gap:4px}
+  .src a{color:var(--accent);overflow-wrap:anywhere}
+  .caveat{font-size:12.5px;color:var(--muted);border-left:2px solid var(--line);padding-left:10px;margin:0}
+  .history{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{padding:6px 12px;border-radius:999px;font-family:var(--font-mono);font-size:12px;font-weight:600;background:var(--surface-2);border:1px solid var(--line-soft);color:var(--muted)}
+  .chip[aria-pressed="true"]{color:var(--accent);background:var(--accent-soft);border-color:var(--accent)}
+  .cal{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13.5px}
+  .cal .d{font-family:var(--font-mono);color:var(--accent);white-space:nowrap}
+  .cal .imp{font-size:12px;color:var(--muted)}
+  .sector{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line-soft);font-size:13.5px}
+  .sector:first-child{border-top:0;padding-top:0}
+
+  .empty{text-align:center;padding:28px 18px}
+  .empty h2{font-family:var(--font-display),var(--font-zh);font-size:20px;margin:0 0 8px}
+  .empty p{margin:0;color:var(--muted);font-size:14px}
+
+  .form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .form .full{grid-column:1 / -1}
+  label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted);min-width:0}
+  input,select,textarea{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;min-width:0;font-size:15px}
+  textarea{resize:vertical;min-height:84px}
+  .btn{background:linear-gradient(180deg,#E4D3A0,#C6AC6E);color:var(--accent-ink);font-weight:700;border-radius:12px;padding:12px 16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 4px 14px -4px rgba(0,0,0,.7)}
+  .btn:disabled{opacity:.45}
+  .ghost{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;color:var(--accent)}
+  .del{color:var(--up);font-size:12px;font-weight:600;padding:2px 6px}
+  .alloc{display:flex;height:8px;border-radius:99px;overflow:hidden;background:var(--surface-2);margin-top:8px}
+  .alloc span{display:block;height:100%}
+  .bars{display:flex;flex-direction:column;gap:8px}
+  .barrow{display:grid;grid-template-columns:88px 1fr 46px;gap:10px;align-items:center;font-size:13px}
+  .barrow .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .track{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+  .track span{display:block;height:100%;border-radius:99px;background:var(--accent)}
+  .track span.hot{background:var(--warn)}
+  .priceedit{display:grid;grid-template-columns:minmax(0,1fr) 110px auto;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line-soft)}
+  .priceedit:first-of-type{border-top:0}
+  .priceedit input{padding:8px 10px;font-size:14px}
+
+  .alert{border:1px solid var(--up);background:linear-gradient(180deg,var(--up-bg),rgba(229,112,94,.04)),var(--surface);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+  .alert h3{margin:0;font-size:15.5px;color:var(--up)}
+  .alert .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .alert textarea{min-height:64px}
+  .alert.ok{border-color:var(--line);background:var(--surface)}
+  .alert.ok h3{color:var(--accent)}
+  .verdict{border:1px solid rgba(217,197,140,.35);background:var(--accent-soft);border-radius:12px;padding:12px 14px;margin-top:6px}
+  .verdict .vh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:700}
+  .verdict ol{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px;font-size:14px}
+  .verdict ol li::marker{color:var(--accent);font-family:var(--font-mono)}
+  .verdict .sub2{font-size:13px;margin-top:8px}
+  .tier{display:inline-block;font-size:10.5px;font-weight:700;padding:0 6px;border-radius:5px;margin-left:6px;vertical-align:1px}
+  .tier.real{color:var(--down);background:var(--down-bg)}
+  .tier.est{color:var(--warn);background:var(--warn-bg)}
+  .tier.none{color:var(--muted);background:var(--surface-2)}
+  .lesson .concept{font-size:15px;line-height:1.8;margin:0 0 10px}
+  .callout{border-radius:10px;padding:10px 12px;font-size:13.5px;margin-top:8px}
+  .callout.gold{background:var(--accent-soft);border:1px solid rgba(217,197,140,.35)}
+  .callout.plain{background:var(--surface-2);border:1px solid var(--line-soft)}
+  .callout b{color:var(--accent)}
+  .quiz .opt{display:block;width:100%;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);margin-top:8px;font-size:14px}
+  .quiz .opt.ok{border-color:var(--down);background:var(--down-bg)}
+  .quiz .opt.no{border-color:var(--up);background:var(--up-bg)}
+  .quiz .opt:disabled{cursor:default}
+  .gloss details{border-top:1px solid var(--line-soft);padding:8px 0}
+  .gloss details:first-of-type{border-top:0}
+  .gloss summary{cursor:pointer;font-weight:600}
+  .gloss p{margin:6px 0 0;font-size:13.5px;color:var(--ink)}
+
+  .modes{display:flex;gap:6px}
+  .mode{flex:1;padding:9px;border-radius:10px;font-weight:600;font-size:13.5px;color:var(--muted);background:var(--surface-2);border:1px solid var(--line-soft)}
+  .mode[aria-pressed="true"]{color:var(--accent);background:var(--accent-soft);border-color:var(--accent)}
+  .chat{display:flex;flex-direction:column;gap:10px;min-height:40px}
+  .msg{padding:11px 14px;border-radius:14px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14.5px;line-height:1.75}
+  .msg.u{align-self:flex-end;background:var(--accent-soft);border:1px solid var(--accent);max-width:88%}
+  .msg.a{align-self:flex-start;background:var(--surface);border:1px solid var(--line);max-width:100%}
+  .msg.err{color:var(--up)}
+  .ask{display:flex;gap:8px;align-items:flex-end}
+  .ask textarea{min-height:48px;max-height:160px}
+  .suggest{display:flex;flex-wrap:wrap;gap:6px}
+  .suggest button{padding:7px 12px;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);text-align:left}
+  .note-sm{font-size:12px;color:var(--muted);margin:0}
+  .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--surface-2);border:1px solid var(--accent);color:var(--ink);padding:10px 16px;border-radius:12px;font-size:13.5px;z-index:20;max-width:calc(100% - 32px)}
+  footer{margin-top:22px;font-size:12px;color:var(--muted);text-align:center}
+  @media (max-width:420px){.form{grid-template-columns:1fr}.scen{grid-template-columns:1fr}.priceedit{grid-template-columns:minmax(0,1fr) 96px auto;}}
+  @media (prefers-reduced-motion:no-preference){.msg{animation:in .18s ease-out}@keyframes in{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="kicker">Daily Brief · 美股 / 台股</div>
+    <h1>投資晨報</h1>
+    <div class="sub"><span id="dateLine">尚未收到晨報</span><span class="pill" id="fresh" hidden></span></div>
+  </header>
+  <nav class="tabs" role="tablist" aria-label="分頁">
+    <button class="tab" role="tab" id="t-brief" aria-selected="true" data-tab="brief">晨報</button>
+    <button class="tab" role="tab" id="t-hold" aria-selected="false" data-tab="hold">我的持股</button>
+    <button class="tab" role="tab" id="t-learn" aria-selected="false" data-tab="learn">學習</button>
+    <button class="tab" role="tab" id="t-ask" aria-selected="false" data-tab="ask">問 Claude</button>
+  </nav>
+
+  <section class="panel" id="p-brief" role="tabpanel" aria-labelledby="t-brief"></section>
+
+  <section class="panel" id="p-hold" role="tabpanel" aria-labelledby="t-hold" hidden>
+    <div id="holdAlerts" class="stack"></div>
+    <div class="card" id="holdList"></div>
+    <div class="card" id="riskCard" hidden></div>
+    <div class="card">
+      <h2 class="lbl">停損線</h2>
+      <p class="note-sm" style="margin-bottom:8px">沒設定時用預設(投資成本 −你設的停損%)。按「確認」就變成你自己的承諾;之後只能往上移,不能往下移。排程和 AI 都不能改。</p>
+      <div id="stopEdit"></div>
+    </div>
+    <div class="card">
+      <h2 class="lbl">手動更新市價</h2>
+      <p class="note-sm" style="margin-bottom:8px">排程查不到的價格,可以照券商 App 填在這裡。日期比排程查到的新,就會用你填的。</p>
+      <div id="priceEdit"></div>
+    </div>
+    <div class="card">
+      <h2 class="lbl">投資取向</h2>
+      <div class="form">
+        <label class="f" for="pf-horizon">投資期間
+          <select id="pf-horizon"><option value="">請選擇</option><option>短期(數天到數週)</option><option>中短期(數週到數月)</option><option>中長期(半年以上)</option><option>長期(數年)</option></select></label>
+        <label class="f" for="pf-risk">風險取向
+          <select id="pf-risk"><option value="">請選擇</option><option>保守</option><option>穩健</option><option>積極</option></select></label>
+        <label class="f" for="pf-loss">最多能接受的總虧損
+          <input id="pf-loss" placeholder="例如 -15%"></label>
+        <label class="f" for="pf-monthly">每月可投入金額
+          <input id="pf-monthly" placeholder="例如 10,000"></label>
+        <label class="f" for="pf-fee">手續費折數(沒折扣填 10)
+          <input id="pf-fee" type="number" min="0" max="10" step="any" inputmode="decimal" placeholder="例如 2.8"></label>
+        <label class="f" for="pf-tp">停利提醒(報酬率 %)
+          <input id="pf-tp" type="number" min="0" step="any" inputmode="decimal" placeholder="例如 15"></label>
+        <label class="f" for="pf-sl">停損提醒(虧損 %)
+          <input id="pf-sl" type="number" min="0" step="any" inputmode="decimal" placeholder="例如 8"></label>
+        <div class="full"><button class="btn" id="pf-save" type="button">儲存取向</button></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="lbl">新增持股</h2>
+      <form class="form" id="addForm" autocomplete="off">
+        <label class="f" for="h-kind">類別
+          <select id="h-kind"><option>現股</option><option>ETF</option><option>美股</option></select></label>
+        <label class="f" for="h-symbol">代號
+          <input id="h-symbol" required placeholder="2330 / NVDA"></label>
+        <label class="f" for="h-name">名稱
+          <input id="h-name" placeholder="台積電"></label>
+        <label class="f" for="h-shares">股數
+          <input id="h-shares" type="number" min="0" step="any" inputmode="decimal" required></label>
+        <label class="f" for="h-cost">成交均價(每股)
+          <input id="h-cost" type="number" min="0" step="any" inputmode="decimal" required></label>
+        <label class="f" for="h-invest">投資成本(選填,券商畫面的數字)
+          <input id="h-invest" type="number" min="0" step="any" inputmode="decimal" placeholder="填了就以此為準"></label>
+        <label class="f full" for="h-note">備註
+          <input id="h-note" placeholder="買進理由、打算抱多久"></label>
+        <div class="full"><button class="btn" type="submit">加入持股</button></div>
+      </form>
+    </div>
+    <p class="note-sm">持股只存在你個人的私人區塊,其他被分享的人看不到。請勿填帳號、姓名或身分證字號。</p>
+  </section>
+
+  <section class="panel" id="p-learn" role="tabpanel" aria-labelledby="t-learn" hidden></section>
+
+  <section class="panel" id="p-ask" role="tabpanel" aria-labelledby="t-ask" hidden>
+    <div class="card">
+      <div class="modes" role="group" aria-label="回答模式">
+        <button class="mode" type="button" data-mode="advisor" aria-pressed="true">顧問模式</button>
+        <button class="mode" type="button" data-mode="teacher" aria-pressed="false">老師模式</button>
+      </div>
+      <p class="note-sm" id="modeNote" style="margin:10px 0">直接給判斷、依據與條件,會參考你的持股、損益和最新晨報。</p>
+      <div class="suggest" id="suggest"></div>
+    </div>
+    <div class="chat" id="chat" aria-live="polite"></div>
+    <form class="ask" id="askForm">
+      <label for="q" style="position:absolute;left:-9999px">你的問題</label>
+      <textarea id="q" rows="1" placeholder="輸入問題,例如:旺宏現在該續抱還是停損?"></textarea>
+      <button class="btn" type="submit" id="send">送出</button>
+    </form>
+    <div class="rowbtns"><button class="ghost" id="stop" type="button" hidden>停止</button><button class="ghost" id="clearChat" type="button">清除對話</button></div>
+    <p class="note-sm">這裡不能上網查即時資料,數字以晨報和你填的市價為準。</p>
+  </section>
+
+  <footer>研究輔助資訊,不是投資建議。資料可能延遲或有誤,下單前請在券商 App 核對。</footer>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+  var $ = function(s){ return document.querySelector(s); };
+  function el(tag, attrs, kids){
+    var n = document.createElement(tag);
+    if (attrs) for (var k in attrs){
+      var v = attrs[k];
+      if (v == null) continue;
+      if (k === 'class') n.className = v;
+      else if (k === 'text') n.textContent = v;
+      else if (k === 'style') n.style.cssText = v;
+      else if (k.slice(0,2) === 'on') n.addEventListener(k.slice(2), v);
+      else n.setAttribute(k, v);
+    }
+    (kids || []).forEach(function(c){ if (c != null && c !== false) n.append(c.nodeType ? c : document.createTextNode(String(c))); });
+    return n;
+  }
+  function str(v){ return v == null ? '' : String(v); }
+  function arr(v){ return Array.isArray(v) ? v : []; }
+  function safeUrl(u){ try { var x = new URL(String(u)); return x.protocol === 'https:' ? x.href : null; } catch(e){ return null; } }
+  function toast(msg){ var t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(function(){ t.hidden = true; }, 2600); }
+  function lsGet(k){ try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch(e){ return null; } }
+  function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+  function today(){ var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+  function fmt(n){ return Number(n).toLocaleString('zh-TW', {maximumFractionDigits:2}); }
+  function sgn(n, d){ var v = Number(n); if (!isFinite(v)) return '—'; return (v > 0 ? '+' : '') + v.toLocaleString('zh-TW', {maximumFractionDigits: d == null ? 0 : d}); }
+  function cls(n){ return n > 0 ? 'up' : n < 0 ? 'down' : ''; }
+
+  var S = { quotes: {}, quotesAsOf: '', briefs: [], sel: null, profile: {}, holdings: [], portRef: null, dbOK: false,
+            sample: null, turns: [], ctl: null, busy: false, mode: 'advisor',
+            todoDone: lsGet('todoDone') || {}, quizDone: lsGet('quizDone') || {} };
+  var ACTIONS = { hold:['續抱','hold'], add:['加碼','add'], trim:['減碼','trim'], exit:['出場','exit'], sell:['賣出','exit'] };
+  var TIERS = { '實測':'real', '推估':'est', '缺':'none', '查無':'none' };
+  var COLORS = ['#D9C58C','#B79E5F','#E5705E','#5FBE7A','#7FB4E0','#C79BE0','#E0B47F','#8C8A82'];
+
+  /* ---------- tabs ---------- */
+  var TABS = ['brief','hold','learn','ask'];
+  function showTab(name){
+    TABS.forEach(function(t){ $('#p-'+t).hidden = t !== name; $('#t-'+t).setAttribute('aria-selected', String(t === name)); });
+    try { history.replaceState(null, '', '#'+name); } catch(e){}
+  }
+  document.querySelectorAll('.tab').forEach(function(b){ b.addEventListener('click', function(){ showTab(b.dataset.tab); }); });
+  var initial = (location.hash || '').slice(1);
+  if (TABS.indexOf(initial) > -1) showTab(initial);
+
+  function latestBrief(){ return S.briefs[0] || null; }
+  function briefHolding(sym){ var b = latestBrief(); return b ? arr(b.holdings).find(function(h){ return str(h.symbol) === str(sym); }) : null; }
+
+  /* ---------- prices & P/L ---------- */
+  /* Price source: whichever is newer of the scheduled quote and the price the owner typed in. */
+  function priceOf(h){
+    var q = S.quotes[h.symbol];
+    var m = Number(h.manualPrice) > 0 ? { price:Number(h.manualPrice), change: h.manualChange != null && h.manualChange !== '' ? Number(h.manualChange) : null, date: str(h.manualDate), src:'你填的' } : null;
+    var a = q && Number(q.price) > 0 ? { price:Number(q.price), change: q.change != null ? Number(q.change) : null, date: str(q.date), src:'排程查詢' } : null;
+    if (m && a) return (m.date >= a.date) ? m : a;
+    return m || a;
+  }
+  /* Broker-style unrealised P/L. Taiwan: fee 0.1425% × discount, sell tax 0.3% (stock) / 0.1% (ETF), amounts floored. US: no fees. */
+  function calc(h){
+    var sh = Number(h.shares) || 0, avg = Number(h.cost) || 0;
+    var us = h.kind === '美股' || h.market === '美股';
+    var disc = Number(S.profile && S.profile.feeDiscount); if (!(disc > 0)) disc = 10;
+    var fee = us ? 0 : 0.001425 * disc / 10;
+    var tax = us ? 0 : (h.kind === 'ETF' ? 0.001 : 0.003);
+    var invest = Number(h.investCost) > 0 ? Number(h.investCost) : sh * avg + Math.floor(sh * avg * fee);
+    var p = priceOf(h);
+    var out = { us: us, sh: sh, avg: avg, invest: invest, breakeven: sh ? invest / (sh * (1 - fee - tax)) : 0, p: p, price: p ? p.price : null };
+    if (p){
+      out.mv = sh * p.price;
+      out.income = out.mv - Math.floor(out.mv * fee) - Math.floor(out.mv * tax);
+      out.pl = out.income - invest;
+      out.ret = invest ? out.pl / invest : 0;
+    }
+    /* Stop line is owned by the user (or a default % they can confirm). Code decides the trigger; the schedule/LLM never moves it. */
+    var defPct = Number(S.profile && S.profile.stopLoss) || 10;
+    out.stopUser = Number(h.stopPrice) > 0;
+    out.stop = out.stopUser ? Number(h.stopPrice) : (sh ? Math.round(invest / sh * (1 - defPct / 100) * 100) / 100 : 0);
+    out.stopSrc = out.stopUser ? '你設定的' : '預設 -' + defPct + '%';
+    out.triggered = out.price != null && out.stop > 0 && out.price <= out.stop;
+    return out;
+  }
+
+  /* ---------- brief ---------- */
+  function marketCard(title, m){
+    if (!m) return null;
+    var kids = [el('h2', {class:'lbl', text:title})];
+    if (m.text) kids.push(el('p', {class:'body-text', text:str(m.text)}));
+    var items = arr(m.items);
+    if (items.length){
+      kids.push(el('div', {class:'tablewrap'}, [ el('table', null, [
+        el('thead', null, [ el('tr', null, [ el('th', {text:'項目'}), el('th', {class:'num', text:'數值'}), el('th', {class:'num', text:'漲跌'}), el('th', {text:'說明'}) ]) ]),
+        el('tbody', null, items.map(function(it){
+          var c = str(it.change).trim(), k = /^\+/.test(c) ? 'up' : /^[-−–]/.test(c) ? 'down' : '';
+          return el('tr', null, [ el('td', {text:str(it.name)}), el('td', {class:'num mono', text:str(it.value)}), el('td', {class:'num mono ' + k, text:c}), el('td', {class:'note', text:str(it.note)}) ]);
+        })) ]) ]));
+      kids.push(el('p', {class:'legend', text:'紅色為上漲,綠色為下跌(台股慣例)。'}));
+    }
+    return el('div', {class:'card'}, kids);
+  }
+  /* A detail value is either plain text or {text, tier: 實測|推估|缺, date}. */
+  function tierNode(v){
+    if (v && typeof v === 'object' && !Array.isArray(v)){
+      var t = str(v.tier), k = TIERS[t] || 'none';
+      return [ str(v.text) || '查不到', el('span', {class:'tier ' + k, text: t + (v.date ? ' ' + str(v.date).slice(5) : '')}) ];
+    }
+    var s = str(v), m = s.match(/推估|未取得|查不到|查無/);
+    return m ? [ s, el('span', {class:'tier ' + (m[0] === '推估' ? 'est' : 'none'), text: m[0] === '推估' ? '推估' : '缺'}) ] : [ s ];
+  }
+  function verdictBlock(h){
+    var d = h.decision; if (!d || typeof d !== 'object') return null;
+    var a = ACTIONS[d.action];
+    return el('div', {class:'verdict'}, [
+      el('div', {class:'vh'}, [ a ? el('span', {class:'act ' + a[1], text:a[0]}) : null, str(d.size), d.confidence ? el('span', {class:'muted', style:'font-weight:500;font-size:12.5px', text:'信心:' + str(d.confidence)}) : null ]),
+      arr(d.chain).length ? el('ol', null, d.chain.map(function(c){ return el('li', {text:str(c)}); })) : null,
+      d.counter ? el('div', {class:'sub2 muted', text:'反方論點:' + str(d.counter)}) : null,
+      d.changeMind ? el('div', {class:'sub2', text:'什麼情況我會改變結論:' + str(d.changeMind)}) : null,
+      el('div', {class:'rowbtns', style:'margin-top:8px'}, [
+        el('button', {class:'ghost', type:'button', text:'我不同意,跟你討論', onclick:function(){ disagree(h); }})
+      ])
+    ]);
+  }
+  function disagree(h){
+    showTab('ask'); setMode('advisor');
+    var d = h.decision || {}, a = ACTIONS[d.action];
+    $('#q').value = '我不同意你對 ' + str(h.symbol) + ' ' + str(h.name) + ' 的結論(' + (a ? a[0] : '') + ' ' + str(d.size) + ')。我的看法是:';
+    $('#q').focus();
+  }
+  function detailBlock(d){
+    if (!d || typeof d !== 'object') return null;
+    var rows = [['產業', d.sector], ['短期趨勢', d.trendShort], ['中期趨勢', d.trendMid], ['支撐區', d.support], ['壓力區', d.resistance], ['均線', d.ma], ['量能', d.volume], ['基本面', d.fundamentals], ['法人動向', d.institutions], ['近期催化', arr(d.catalysts).join('、')]]
+      .filter(function(r){ return r[1] != null && str(r[1]) !== ''; });
+    var kids = [el('summary', {text:'看完整分析'})];
+    if (rows.length) kids.push(el('dl', {class:'dl'}, rows.reduce(function(a, r){ a.push(el('dt', {text:r[0]}), el('dd', null, tierNode(r[1]))); return a; }, [])));
+    if (d.bull || d.bear) kids.push(el('div', {class:'scen'}, [ el('div', {class:'bull'}, [ el('b', {text:'樂觀情境'}), str(d.bull) ]), el('div', {class:'bear'}, [ el('b', {text:'悲觀情境'}), str(d.bear) ]) ]));
+    if (d.plan) kids.push(el('div', {style:'padding:0 12px 12px'}, [ el('div', {class:'callout gold'}, [ el('b', {text:'中短期操作計畫 '}), str(d.plan) ]) ]));
+    return el('details', {class:'more'}, kids);
+  }
+  function askAbout(text){ showTab('ask'); $('#q').value = text; ask(); }
+
+  function todayDecision(sym){
+    var t = today();
+    return arr(S.decisions).filter(function(x){ return x.symbol === sym && str(x.date).slice(0, 10) === t; }).pop() || null;
+  }
+  function renderAlerts(box){
+    var trig = S.holdings.map(function(h){ return { h:h, c:calc(h) }; }).filter(function(x){ return x.c.triggered; });
+    trig.forEach(function(x){
+      var h = x.h, c = x.c, done = todayDecision(h.symbol), bh = briefHolding(h.symbol), dec = bh && bh.decision, a = dec && ACTIONS[dec.action];
+      var card = el('div', {class:'alert' + (done ? ' ok' : '')}, [
+        el('h3', {text:(done ? '已處理:' : '已觸發停損:') + str(h.name || h.symbol) + ' ' + str(h.symbol)}),
+        el('div', {class:'mono', style:'font-size:13.5px', text:'市價 ' + fmt(c.price) + ' ≤ 停損價 ' + fmt(c.stop) + '(' + c.stopSrc + ')· 目前報酬率 ' + sgn(c.ret * 100, 2) + '%'}),
+        dec ? el('div', {style:'font-size:14px'}, [ '顧問結論:', a ? el('span', {class:'act ' + a[1], text:a[0]}) : null, str(dec.size) ]) : null
+      ]);
+      if (done){
+        card.append(el('div', {class:'watch', text:'今天的決定:' + (done.type === 'execute' ? '已執行' : '不執行') + (done.note ? ',理由:' + done.note : '')}));
+      } else {
+        var ta = el('textarea', {id:'why-' + h.symbol, placeholder:'不照規則執行的理由(必填),例如:營收創新高,先減碼一半,剩下跌破 110 全出'});
+        ta.hidden = true;
+        var save = el('button', {class:'ghost', type:'button', text:'儲存理由', onclick:function(){
+          if (!ta.value.trim()){ toast('請先寫下理由'); return; }
+          logDecision(h.symbol, 'override', ta.value.trim(), c.price);
+        }});
+        save.hidden = true;
+        card.append(el('div', {class:'row'}, [
+          el('button', {class:'btn', type:'button', text:'我已照規則執行', onclick:function(){ logDecision(h.symbol, 'execute', '', c.price); }}),
+          el('button', {class:'ghost', type:'button', text:'不執行,寫下理由', onclick:function(){ ta.hidden = false; save.hidden = false; ta.focus(); }}),
+          el('button', {class:'ghost', type:'button', text:'問顧問', onclick:function(){ askAbout(str(h.name) + ' ' + str(h.symbol) + ' 已觸發停損(市價 ' + c.price + ' ≤ 停損 ' + c.stop + ')。請給我明確結論和完整邏輯鏈:該全賣、減碼還是續抱?為什麼?'); }})
+        ]), ta, save);
+      }
+      box.append(card);
+    });
+  }
+  function logDecision(sym, type, note, price){
+    S.decisions = arr(S.decisions).concat([{ date: new Date().toISOString(), symbol: sym, type: type, note: note, price: price }]).slice(-200);
+    renderBrief(); renderHold();
+    savePortfolio().then(function(){ toast('已記錄你的決定'); });
+  }
+  function renderIntraday(box){
+    var d = S.intraday;
+    if (!d || str(d.date) !== today() || !arr(d.notes).length) return;
+    box.append(el('div', {class:'card'}, [ el('h2', {class:'lbl', text:'盤中快訊 · ' + str(d.time)}),
+      el('div', {class:'stack'}, d.notes.map(function(n){ return el('p', {class:'caveat', style:'color:var(--ink)', text:str(n)}); })),
+      el('p', {class:'legend', text:'盤中價格來自網路搜尋,可能延遲數分鐘到數十分鐘,下單前以券商 App 為準。'}) ]));
+  }
+  function renderBrief(){
+    var p = $('#p-brief'); p.textContent = '';
+    var b = S.briefs.find(function(x){ return x.date === S.sel; }) || S.briefs[0];
+    if (!b){
+      p.append(el('div', {class:'card empty'}, [ el('h2', {text:'還沒有晨報'}), el('p', {text: S.dbOK ? '第一份晨報會在每天早上 8:00 前出現在這裡。' : '正在連線,請稍候。'}) ]));
+      $('#dateLine').textContent = '尚未收到晨報'; $('#fresh').hidden = true;
+      return;
+    }
+    S.sel = b.date;
+    $('#dateLine').textContent = str(b.date) + (b.generatedAt ? ' · 產生於 ' + new Date(b.generatedAt).toLocaleString('zh-TW', {hour12:false, month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'}) : '');
+    var age = Math.round((new Date(today() + 'T00:00:00') - new Date(b.date + 'T00:00:00')) / 86400000);
+    var f = $('#fresh'); f.hidden = false; f.className = 'pill ' + (age <= 1 ? 'fresh' : 'stale');
+    f.textContent = age <= 0 ? '今天' : age === 1 ? '昨天' : age + ' 天前';
+
+    if (S.briefs.length > 1){
+      p.append(el('div', {class:'history', role:'group', 'aria-label':'歷史晨報'}, S.briefs.map(function(x){
+        return el('button', {class:'chip', type:'button', 'aria-pressed':String(x.date === b.date), text:str(x.date).slice(5), onclick:function(){ S.sel = x.date; renderBrief(); }});
+      })));
+    }
+    renderAlerts(p);
+    renderIntraday(p);
+    if (arr(b.summary).length){
+      p.append(el('div', {class:'card hero'}, [ el('h2', {class:'lbl', text:'今日摘要'}),
+        el('ul', {class:'summary'}, b.summary.map(function(s, i){ return el('li', null, [ el('span', {class:'n', text:String(i+1).padStart(2,'0')}), el('span', {text:str(s)}) ]); })) ]));
+    }
+    if (b.outlook && (b.outlook.short || b.outlook.mid)){
+      p.append(el('div', {class:'card'}, [ el('h2', {class:'lbl', text:'大盤展望'}),
+        el('div', {class:'grid2'}, [
+          el('div', {class:'stat'}, [ el('div', {class:'k', text:'短期(1–2 週)'}), el('div', {style:'font-size:14px', text:str(b.outlook.short)}) ]),
+          el('div', {class:'stat'}, [ el('div', {class:'k', text:'中期(1–3 個月)'}), el('div', {style:'font-size:14px', text:str(b.outlook.mid)}) ]) ]),
+        b.outlook.note ? el('p', {class:'legend', text:str(b.outlook.note)}) : null ]));
+    }
+    var us = marketCard('美股', b.us); if (us) p.append(us);
+    var tw = marketCard('台股', b.tw); if (tw) p.append(tw);
+
+    if (arr(b.holdings).length){
+      p.append(el('div', {class:'card'}, [ el('h2', {class:'lbl', text:'我的持股:今日建議'}),
+        el('div', null, b.holdings.map(function(h){
+          var a = ACTIONS[h.action];
+          return el('div', {class:'holdrow'}, [
+            el('div', {class:'holdhead'}, [ el('span', null, [ a ? el('span', {class:'act ' + a[1], text:a[0]}) : null, el('span', {class:'sym', text:str(h.symbol)}), ' ', str(h.name) ]),
+              el('button', {class:'ghost', type:'button', text:'追問', onclick:function(){ askAbout('請針對 ' + str(h.symbol) + ' ' + str(h.name) + ' 用中短期的角度,告訴我現在該怎麼處理、依據是什麼、什麼情況下要改變做法。'); }}) ]),
+            verdictBlock(h),
+            el('div', {text:str(h.view)}),
+            h.trigger ? el('div', {class:'watch', text:'改變看法的條件:' + str(h.trigger)}) : null,
+            h.watch ? el('div', {class:'watch', text:'留意:' + str(h.watch)}) : null,
+            detailBlock(h.detail)
+          ]);
+        })) ]));
+    }
+    if (arr(b.ideas).length){
+      p.append(el('div', {class:'card'}, [ el('h2', {class:'lbl', text:'買進研究清單'}),
+        el('div', null, b.ideas.map(function(x){
+          return el('div', {class:'holdrow'}, [
+            el('div', {class:'holdhead'}, [ el('span', null, [ el('span', {class:'sym', text:str(x.symbol)}), ' ', str(x.name), x.sector ? el('span', {class:'muted', text:' · ' + str(x.sector)}) : null ]),
+              el('button', {class:'ghost', type:'button', text:'追問', onclick:function(){ askAbout('買進研究清單裡的 ' + str(x.symbol) + ' ' + str(x.name) + ',適合我現在的持股組合嗎?如果要買,要注意什麼?'); }}) ]),
+            el('div', {text:str(x.why)}),
+            x.entry ? el('div', {class:'watch', text:'可考慮的進場條件:' + str(x.entry)}) : null,
+            x.exit ? el('div', {class:'watch', text:'出場/停損參考:' + str(x.exit)}) : null,
+            x.risk ? el('div', {class:'watch', text:'風險:' + str(x.risk)}) : null
+          ]);
+        })),
+        el('p', {class:'legend', text:'這是研究清單,不是下單指令。進場前請自行確認價格、資金配置與風險。'}) ]));
+    }
+    if (arr(b.sectors).length){
+      p.append(el('div', {class:'card'}, [ el('h2', {class:'lbl', text:'產業熱度'}),
+        el('div', null, b.sectors.map(function(s){
+          return el('div', {class:'sector'}, [ el('span', null, [ el('b', {text:str(s.name)}), el('span', {class:'watch', style:'display:block', text:str(s.note)}) ]), el('span', {class:'act ' + (/強|熱|升/.test(str(s.trend)) ? 'add' : /弱|冷|跌/.test(str(s.trend)) ? 'trim' : 'hold'), text:str(s.trend)}) ]);
+        })) ]));
+    }
+    if (arr(b.calendar).length){
+      p.append(el('div', {class:'card'}, [ el('h2', {class:'lbl', text:'未來一週行事曆'}),
+        el('div', {class:'cal'}, b.calendar.reduce(function(a, c){ a.push(el('span', {class:'d', text:str(c.date)}), el('span', null, [ str(c.event), c.impact ? el('span', {class:'imp', style:'display:block', text:str(c.impact)}) : null ])); return a; }, [])) ]));
+    }
+    if (arr(b.risks).length){
+      p.append(el('div', {class:'card'}, [ el('h2', {class:'lbl', text:'風險提醒'}), el('div', {class:'stack'}, b.risks.map(function(r){ return el('p', {class:'caveat', text:str(r)}); })) ]));
+    }
+    if (arr(b.todos).length){
+      var key = b.date, done = S.todoDone[key] || {};
+      p.append(el('div', {class:'card'}, [ el('h2', {class:'lbl', text:'今天要盯的事'}),
+        el('div', {class:'stack'}, b.todos.map(function(t, i){
+          var on = !!done[i];
+          return el('button', {class:'todo', type:'button', 'aria-pressed':String(on), onclick:function(){ var d = S.todoDone[key] || (S.todoDone[key] = {}); d[i] = !d[i]; lsSet('todoDone', S.todoDone); renderBrief(); }},
+            [ el('span', {class:'box', text: on ? '✓' : ''}), el('span', {text:str(t)}) ]);
+        })) ]));
+    }
+    var srcs = arr(b.sources).filter(function(s){ return safeUrl(s.url); });
+    if (srcs.length){
+      p.append(el('details', {class:'card more', style:'padding:0'}, [ el('summary', {text:'資料來源(' + srcs.length + ')'}),
+        el('div', {class:'src', style:'padding:0 12px 12px'}, srcs.map(function(s){
+          return el('div', null, [ el('a', {href:safeUrl(s.url), target:'_blank', rel:'noopener noreferrer', text:str(s.title) || safeUrl(s.url)}), s.date ? el('span', {class:'muted mono', text:' · ' + str(s.date)}) : null ]);
+        })) ]));
+    }
+    if (arr(b.caveats).length){
+      p.append(el('details', {class:'card more', style:'padding:0'}, [ el('summary', {text:'資料限制與查不到的項目'}),
+        el('div', {class:'stack', style:'padding:0 12px 12px'}, b.caveats.map(function(c){ return el('p', {class:'caveat', text:str(c)}); })) ]));
+    }
+  }
+
+  /* ---------- holdings ---------- */
+  var saveChain = Promise.resolve();
+  function savePortfolio(){
+    if (!S.portRef){ toast('目前無法儲存,請確認已登入'); return Promise.resolve(); }
+    var data = { profile: S.profile, holdings: S.holdings, decisions: arr(S.decisions), updatedAt: new Date().toISOString() };
+    saveChain = saveChain.then(function(){ return S.portRef.set(data); })
+      .catch(function(e){ toast('儲存失敗:' + (e && e.code === 'quota_exceeded' ? '空間已滿' : '請稍後再試')); });
+    return saveChain;
+  }
+
+  function renderHold(){
+    var ab = $('#holdAlerts'); ab.textContent = ''; renderAlerts(ab);
+    var box = $('#holdList'); box.textContent = '';
+    box.append(el('h2', {class:'lbl', text:'庫存損益(預估未實現)'}));
+    if (!S.holdings.length){
+      box.append(el('p', {class:'muted', style:'margin:0', text: S.portRef ? '還沒有持股。用下方的表單新增第一檔,晨報和問答就會參考它。' : '登入後才能儲存持股。'}));
+      $('#riskCard').hidden = true; renderPriceEdit(); return;
+    }
+    var tp = Number(S.profile && S.profile.takeProfit), sl = Number(S.profile && S.profile.stopLoss);
+    var heads = ['商品','預估損益','報酬率','預估收入','類別','股數','成交均價','投資成本','市值','市價','漲跌','損益平衡點','停損價','今日建議'];
+    var tot = { '台股': {inv:0, inc:0, mv:0, n:0, miss:0}, '美股': {inv:0, inc:0, mv:0, n:0, miss:0} };
+    var rows = S.holdings.map(function(h, i){
+      var c = calc(h), t = tot[c.us ? '美股' : '台股'];
+      t.inv += c.invest;
+      if (c.price != null){ t.inc += c.income; t.mv += c.mv; t.n++; } else t.miss++;
+      var flag = null;
+      if (c.price != null){ if (tp > 0 && c.ret * 100 >= tp) flag = '達停利線'; else if (sl > 0 && c.ret * 100 <= -sl) flag = '達停損線'; }
+      var bh = briefHolding(h.symbol), a = bh && ACTIONS[bh.action];
+      var chg = c.price != null ? Math.round((c.price - c.avg) * 100) / 100 : null; /* broker convention: 市價 − 成交均價 */
+      return el('tr', null, [
+        el('td', {class:'sticky'}, [ el('span', {class:'sym', text:str(h.symbol)}), ' ', str(h.name), flag ? el('span', {class:'flag', text:flag}) : null,
+          el('button', {class:'del', type:'button', 'aria-label':'刪除 ' + str(h.symbol), text:'刪除', onclick:function(){ if (S.confirmDel === i){ S.confirmDel = null; S.holdings.splice(i,1); renderAllHold(); savePortfolio(); } else { S.confirmDel = i; toast('再按一次「刪除」確認移除 ' + str(h.symbol)); } }}) ]),
+        el('td', {class:'num mono ' + (c.pl != null ? cls(c.pl) : ''), text: c.pl != null ? sgn(c.pl) : '—'}),
+        el('td', {class:'num mono ' + (c.pl != null ? cls(c.pl) : ''), text: c.pl != null ? sgn(c.ret * 100, 2) + '%' : '—'}),
+        el('td', {class:'num mono', text: c.income != null ? fmt(c.income) : '—'}),
+        el('td', {text: (h.kind === '股票' || !h.kind) ? (c.us ? '美股' : '現股') : str(h.kind)}),
+        el('td', {class:'num mono', text:fmt(c.sh)}),
+        el('td', {class:'num mono', text:fmt(c.avg)}),
+        el('td', {class:'num mono', text:fmt(Math.round(c.invest))}),
+        el('td', {class:'num mono', text: c.mv != null ? fmt(Math.round(c.mv)) : '—'}),
+        el('td', {class:'num mono'}, [ c.price != null ? fmt(c.price) : '—', c.p ? el('span', {class:'src-tag', text:c.p.src + (c.p.date ? ' ' + c.p.date.slice(5) : '')}) : null ]),
+        el('td', {class:'num mono ' + (chg != null ? cls(chg) : ''), text: chg != null ? sgn(chg, 2) : '—'}),
+        el('td', {class:'num mono', text:fmt(Math.round(c.breakeven * 100) / 100)}),
+        el('td', {class:'num mono ' + (c.triggered ? 'up' : '')}, [ fmt(c.stop), el('span', {class:'src-tag', text:c.stopSrc}) ]),
+        el('td', null, [ a ? el('span', {class:'act ' + a[1], text:a[0]}) : el('span', {class:'muted', text:'—'}) ])
+      ]);
+    });
+    var tl = el('div', {class:'totals'});
+    ['台股','美股'].forEach(function(m){
+      var t = tot[m]; if (!t.inv) return;
+      var ok = t.n && !t.miss, pl = t.inc - t.inv;
+      tl.append(el('div', null, [ el('b', {text:m + '  '}),
+        ok ? el('span', null, [ '預估總損益 ', el('b', {class:cls(pl), text:sgn(pl)}), ' · 報酬率 ', el('b', {class:cls(pl), text:sgn(pl / t.inv * 100, 2) + '%'}),
+          ' · 預估總收入 ', el('b', {text:fmt(t.inc)}), ' · 總投資成本 ', el('b', {text:fmt(Math.round(t.inv))}), ' · 總市值 ', el('b', {text:fmt(Math.round(t.mv))}) ])
+          : el('span', null, [ '總投資成本 ', el('b', {text:fmt(Math.round(t.inv))}), el('span', {class:'muted', text:'(有持股缺市價,暫不加總損益)'}) ]) ]));
+    });
+    box.append(tl);
+    box.append(el('div', {class:'tablewrap pltable'}, [ el('table', null, [
+      el('thead', null, [ el('tr', null, heads.map(function(t, k){ return el('th', {class: k === 0 ? 'sticky' : (k === 4 || k === 13 ? '' : 'num'), text:t}); })) ]),
+      el('tbody', null, rows) ]) ]));
+    box.append(el('p', {class:'legend', text:'市價為收盤價,不是即時價。台股手續費 0.1425% × 折數、證交稅股票 0.3% / ETF 0.1%,金額無條件捨去,與券商可能有幾元差異。漲跌 = 市價 − 成交均價(跟券商相同)。損益平衡點 = 賣出後剛好不賠的價格。'}));
+    box.append(el('div', {class:'rowbtns', style:'margin-top:12px'}, [
+      el('button', {class:'btn', type:'button', text:'請 Claude 做持股健檢', onclick:function(){ askAbout('請幫我做一次完整的持股健檢:逐檔說明現在的損益狀況、離損益平衡點還差多少、以我中短期的投資期間該續抱/減碼/停損的條件,再評估整體集中度與風險,最後給我接下來一到兩週的具體行動清單。'); }})
+    ]));
+    renderRisk(rows.length ? tot : null);
+    renderPriceEdit();
+    renderStopEdit();
+  }
+
+  function renderRisk(){
+    var card = $('#riskCard'); card.textContent = '';
+    var list = S.holdings.map(function(h){ var c = calc(h); return { h:h, v: c.mv != null ? c.mv : c.invest, c:c }; }).filter(function(x){ return !x.c.us; });
+    var total = list.reduce(function(a, x){ return a + x.v; }, 0);
+    if (!total){ card.hidden = true; return; }
+    card.hidden = false;
+    card.append(el('h2', {class:'lbl', text:'風險儀表板(台股)'}));
+    list.sort(function(a, b){ return b.v - a.v; });
+    card.append(el('div', {class:'bars'}, list.map(function(x){
+      var pct = x.v / total * 100;
+      return el('div', {class:'barrow'}, [ el('span', {class:'nm', text:str(x.h.name || x.h.symbol)}), el('div', {class:'track'}, [ el('span', {class: pct > 40 ? 'hot' : '', style:'width:' + pct.toFixed(1) + '%'}) ]), el('span', {class:'mono num', style:'text-align:right', text:pct.toFixed(0) + '%'}) ]);
+    })));
+    var sectors = {};
+    list.forEach(function(x){ var bh = briefHolding(x.h.symbol); var s = bh && bh.detail && bh.detail.sector ? str(bh.detail.sector) : '未分類'; sectors[s] = (sectors[s] || 0) + x.v; });
+    var secKeys = Object.keys(sectors);
+    var top = list[0], topPct = top.v / total * 100;
+    var losers = list.filter(function(x){ return x.c.ret != null && x.c.ret < 0; }).length;
+    var notes = [];
+    if (topPct > 40) notes.push('最大持股 ' + str(top.h.name || top.h.symbol) + ' 佔 ' + topPct.toFixed(0) + '%,單一個股風險偏高。');
+    if (list.length <= 3) notes.push('只有 ' + list.length + ' 檔,分散度低,任何一檔大跌都會明顯影響總損益。');
+    if (losers) notes.push(list.length + ' 檔中有 ' + losers + ' 檔目前虧損。');
+    if (secKeys.length > 1 || secKeys[0] !== '未分類') notes.push('產業分布:' + secKeys.map(function(k){ return k + ' ' + (sectors[k] / total * 100).toFixed(0) + '%'; }).join('、') + '。');
+    card.append(el('div', {class:'stack', style:'margin-top:12px'}, notes.map(function(n){ return el('p', {class:'caveat', text:n}); })));
+    card.append(el('p', {class:'legend', text:'占比依市值計算,缺市價時用投資成本。'}));
+  }
+
+  function renderPriceEdit(){
+    var box = $('#priceEdit'); box.textContent = '';
+    if (!S.holdings.length){ box.append(el('p', {class:'note-sm', text:'新增持股後才能更新市價。'})); return; }
+    S.holdings.forEach(function(h, i){
+      var p = priceOf(h);
+      var ip = el('input', {type:'number', step:'any', min:'0', inputmode:'decimal', id:'mp-' + i, 'aria-label':str(h.symbol) + ' 市價', placeholder:'市價'});
+      ip.value = p ? p.price : '';
+      box.append(el('div', {class:'priceedit'}, [
+        el('span', null, [ el('span', {class:'sym', text:str(h.symbol)}), ' ', str(h.name) ]), ip,
+        el('button', {class:'ghost', type:'button', text:'更新', onclick:function(){
+          var v = Number(ip.value); if (!(v > 0)){ toast('請輸入大於 0 的市價'); return; }
+          h.manualPrice = v; delete h.manualChange; h.manualDate = today();
+          renderAllHold(); savePortfolio().then(function(){ toast('已更新 ' + str(h.symbol) + ' 市價'); });
+        }})
+      ]));
+    });
+  }
+  function renderStopEdit(){
+    var box = $('#stopEdit'); if (!box) return; box.textContent = '';
+    S.holdings.forEach(function(h, i){
+      var c = calc(h);
+      var ip = el('input', {type:'number', step:'any', min:'0', inputmode:'decimal', id:'sp-' + i, 'aria-label':str(h.symbol) + ' 停損價'});
+      ip.value = c.stop || '';
+      box.append(el('div', {class:'priceedit'}, [
+        el('span', null, [ el('span', {class:'sym', text:str(h.symbol)}), ' ', str(h.name), el('span', {class:'src-tag', text:c.stopSrc}) ]), ip,
+        el('button', {class:'ghost', type:'button', text: c.stopUser ? '上移' : '確認', onclick:function(){
+          var v = Number(ip.value);
+          if (!(v > 0)){ toast('請輸入停損價'); return; }
+          if (c.stopUser && v < Number(h.stopPrice)){ toast('停損線只能往上移,不能往下移'); ip.value = h.stopPrice; return; }
+          h.stopPrice = v; h.stopSetAt = today();
+          renderAllHold(); savePortfolio().then(function(){ toast(str(h.symbol) + ' 停損價設為 ' + v); });
+        }})
+      ]));
+    });
+  }
+  function renderAllHold(){ renderHold(); }
+
+  function fillProfile(){
+    var p = S.profile || {};
+    [['horizon','pf-horizon'],['risk','pf-risk'],['maxLoss','pf-loss'],['monthly','pf-monthly'],['feeDiscount','pf-fee'],['takeProfit','pf-tp'],['stopLoss','pf-sl']].forEach(function(m){
+      var n = $('#' + m[1]); if (document.activeElement !== n) n.value = str(p[m[0]]);
+    });
+  }
+  $('#pf-save').addEventListener('click', function(){
+    S.profile = { horizon: $('#pf-horizon').value, risk: $('#pf-risk').value, maxLoss: $('#pf-loss').value.trim(), monthly: $('#pf-monthly').value.trim(),
+                  feeDiscount: $('#pf-fee').value, takeProfit: $('#pf-tp').value, stopLoss: $('#pf-sl').value };
+    renderAllHold();
+    savePortfolio().then(function(){ toast('已儲存投資取向'); });
+  });
+  $('#addForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var sym = $('#h-symbol').value.trim().toUpperCase(); if (!sym) return;
+    var kind = $('#h-kind').value;
+    S.holdings.push({ kind: kind, market: kind === '美股' ? '美股' : '台股', symbol: sym, name: $('#h-name').value.trim(), shares: Number($('#h-shares').value), cost: Number($('#h-cost').value),
+                      investCost: $('#h-invest').value ? Number($('#h-invest').value) : null, note: $('#h-note').value.trim() });
+    ['h-symbol','h-name','h-shares','h-cost','h-invest','h-note'].forEach(function(id){ $('#'+id).value = ''; });
+    renderAllHold();
+    savePortfolio().then(function(){ toast('已加入 ' + sym); });
+  });
+
+  /* ---------- learn ---------- */
+  var GLOSSARY = [
+    ['損益平衡點', '把買進手續費、賣出手續費和證交稅都算進去後,賣出剛好不賠的價格。股價要站上這個價才算真的賺錢,不是站上成交均價就好。'],
+    ['停損', '事先決定「跌到哪裡就認錯出場」。中短期操作最重要的紀律,目的是讓單筆虧損不會大到傷害整個帳戶。常見做法是依支撐位或固定百分比(例如 -8%)設定。'],
+    ['停利', '事先決定在什麼條件下獲利了結,例如達到目標價、跌破短期均線或出現爆量長黑。可以分批停利,保留部分部位續抱。'],
+    ['支撐與壓力', '支撐是過去買盤進場、股價較難跌破的區域;壓力是過去賣壓出現、較難突破的區域。跌破支撐常變成新的壓力,反之亦然。'],
+    ['均線(MA)', '一段期間收盤價的平均。5 日、10 日看短線,20 日(月線)、60 日(季線)看中期。股價在月線之上且月線上彎,通常代表中短期趨勢偏多。'],
+    ['量價關係', '價漲量增代表追價意願強;價漲量縮代表追價力道減弱;價跌量增要小心賣壓;價跌量縮則可能是賣壓減輕。'],
+    ['三大法人', '外資、投信、自營商。台股中短期走勢常受外資和投信買賣超影響,投信連續買超的中小型股常有作帳行情。'],
+    ['月營收', '台股上市櫃公司每月 10 日前公布上個月營收。年增率(YoY)和月增率(MoM)是中短期最即時的基本面指標。'],
+    ['EPS 與本益比', 'EPS 是每股賺多少錢;本益比 = 股價 ÷ EPS,代表市場願意為每 1 元獲利付多少錢。要和同產業、自身歷史比較才有意義。'],
+    ['部位控管', '決定每檔買多少。常見原則是單一個股不超過總資金的 20%–30%,單筆交易最大虧損控制在總資金的 1%–2%。'],
+    ['殖利率(美債)', '10 年期美債殖利率上升,代表資金成本變高,通常壓抑高本益比的科技成長股評價。'],
+    ['ETF 折溢價', 'ETF 市價高於淨值叫溢價,低於叫折價。溢價太高時買進,等於多付錢。']
+  ];
+  function renderLearn(){
+    var p = $('#p-learn'); p.textContent = '';
+    var lessons = S.briefs.filter(function(b){ return b.lesson && b.lesson.title; });
+    var cur = lessons.find(function(b){ return b.date === S.lessonSel; }) || lessons[0];
+    if (cur){
+      var L = cur.lesson;
+      var kids = [ el('h2', {class:'lbl', text:'今日一課 · ' + str(cur.date).slice(5)}), el('h3', {class:'t', text:str(L.title)}) ];
+      if (L.concept) kids.push(el('p', {class:'concept', text:str(L.concept)}));
+      if (L.whyToday) kids.push(el('div', {class:'callout plain'}, [ el('b', {text:'為什麼今天講這個 '}), str(L.whyToday) ]));
+      if (L.example) kids.push(el('div', {class:'callout plain'}, [ el('b', {text:'用你的持股舉例 '}), str(L.example) ]));
+      if (L.takeaway) kids.push(el('div', {class:'callout gold'}, [ el('b', {text:'一句話記住 '}), str(L.takeaway) ]));
+      p.append(el('div', {class:'card hero lesson'}, kids));
+      var Q = L.quiz;
+      if (Q && Q.q && arr(Q.options).length){
+        var key = cur.date, picked = S.quizDone[key];
+        var qbox = el('div', {class:'card quiz'}, [ el('h2', {class:'lbl', text:'小測驗'}), el('div', {text:str(Q.q)}) ]);
+        Q.options.forEach(function(o, i){
+          var c = picked == null ? '' : (i === Number(Q.answer) ? 'ok' : (i === picked ? 'no' : ''));
+          qbox.append(el('button', {class:'opt ' + c, type:'button', disabled: picked != null ? 'disabled' : null, text:'ABCD'.charAt(i) + '. ' + str(o), onclick:function(){ S.quizDone[key] = i; lsSet('quizDone', S.quizDone); renderLearn(); }}));
+        });
+        if (picked != null) qbox.append(el('div', {class:'callout ' + (picked === Number(Q.answer) ? 'gold' : 'plain')}, [ el('b', {text: picked === Number(Q.answer) ? '答對了 ' : '再想想 '}), str(Q.explain) ]));
+        p.append(qbox);
+      }
+      p.append(el('div', {class:'rowbtns'}, [
+        el('button', {class:'ghost', type:'button', text:'請老師再講深一點', onclick:function(){ setMode('teacher'); askAbout('請用老師的方式,把「' + str(L.title) + '」講得更深入,並用我目前的持股當例子,最後出一題讓我練習。'); }}),
+        el('button', {class:'ghost', type:'button', text:'這跟我的持股有什麼關係?', onclick:function(){ setMode('teacher'); askAbout('「' + str(L.title) + '」這個觀念,套用在我現在的每一檔持股上,分別代表什麼?'); }})
+      ]));
+      if (lessons.length > 1){
+        p.append(el('div', {class:'card'}, [ el('h2', {class:'lbl', text:'過去的課'}),
+          el('div', {class:'history'}, lessons.map(function(b){ return el('button', {class:'chip', type:'button', 'aria-pressed':String(b === cur), text:str(b.date).slice(5) + ' ' + str(b.lesson.title), onclick:function(){ S.lessonSel = b.date; renderLearn(); }}); })) ]));
+      }
+    } else {
+      p.append(el('div', {class:'card empty'}, [ el('h2', {text:'每日一課準備中'}), el('p', {text:'從明天早上的晨報開始,每天會有一個跟當天市場和你持股有關的投資觀念,附小測驗。'}) ]));
+    }
+    var start = el('div', {class:'card'}, [ el('h2', {class:'lbl', text:'新手學習路線'}),
+      el('div', {class:'suggest'}, ['我是新手,請從頭教我看懂券商的庫存損益畫面', '教我中短期交易怎麼設停損停利', '教我看日線圖的支撐、壓力和均線', '教我怎麼用月營收和三大法人判斷個股', '教我部位控管:每檔該買多少'].map(function(q){
+        return el('button', {type:'button', text:q, onclick:function(){ setMode('teacher'); askAbout(q); }});
+      })) ]);
+    p.append(start);
+    p.append(el('div', {class:'card gloss'}, [ el('h2', {class:'lbl', text:'名詞小辭典'})].concat(GLOSSARY.map(function(g){ return el('details', null, [ el('summary', {text:g[0]}), el('p', {text:g[1]}) ]); }))));
+  }
+
+  /* ---------- ask ---------- */
+  var MODES = {
+    advisor: { note:'直接給判斷、依據與條件,會參考你的持股、損益和最新晨報。', chips:['今天開盤前我該注意什麼?', '我的三檔持股該怎麼處理?', '旺宏虧損 10% 該停損還是續抱?', '如果要加碼,先加哪一檔?為什麼?'] },
+    teacher: { note:'用淺白的方式教你觀念,拿你的持股當例子,最後出一題讓你練習。', chips:['什麼是損益平衡點?我的持股離它多遠?', '教我判斷一檔股票的短期趨勢', '為什麼外資賣超會影響台股?', '中短期投資最常犯的錯是什麼?'] }
+  };
+  function setMode(m){
+    S.mode = m;
+    document.querySelectorAll('.mode').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.mode === m)); });
+    $('#modeNote').textContent = MODES[m].note;
+    var sg = $('#suggest'); sg.textContent = '';
+    MODES[m].chips.forEach(function(q){ sg.append(el('button', {type:'button', text:q, onclick:function(){ $('#q').value = q; ask(); }})); });
+  }
+  document.querySelectorAll('.mode').forEach(function(b){ b.addEventListener('click', function(){ setMode(b.dataset.mode); }); });
+  setMode('advisor');
+
+  function holdingsForContext(){
+    return S.holdings.map(function(h){
+      var c = calc(h), bh = briefHolding(h.symbol);
+      return { 代號:h.symbol, 名稱:h.name, 類別:h.kind, 股數:c.sh, 成交均價:c.avg, 投資成本:Math.round(c.invest), 市價:c.price, 市價來源:c.p ? c.p.src + ' ' + c.p.date : '無',
+               市值:c.mv != null ? Math.round(c.mv) : null, 預估損益:c.pl != null ? Math.round(c.pl) : null, 報酬率:c.ret != null ? (Math.round(c.ret * 10000) / 100) + '%' : null,
+               損益平衡點:Math.round(c.breakeven * 100) / 100, 停損價:c.stop, 停損來源:c.stopSrc, 已觸發停損:c.triggered, 今日決定:todayDecision(h.symbol), 備註:h.note, 晨報建議:bh ? { 結論:bh.decision, 看法:bh.view, 條件:bh.trigger, 分析:bh.detail } : null };
+    });
+  }
+  function buildContext(){
+    var b = latestBrief();
+    var lite = b ? { date:b.date, summary:b.summary, outlook:b.outlook, us:b.us, tw:b.tw, ideas:b.ideas, sectors:b.sectors, calendar:b.calendar, risks:b.risks, caveats:b.caveats } : null;
+    var role = S.mode === 'teacher'
+      ? '你是使用者的投資老師。用淺白、有條理的繁體中文教學:先用一句話講結論,再解釋原理,接著用使用者的實際持股或今天的市場當例子,最後出一題簡短的練習題(附答案)。遇到專有名詞要順便解釋。'
+      : '你是使用者的個人投資顧問兼老師。使用者是投資新手,想玩台股個股、中短期(數週到數月)操作,他要的是「教他做決定的人」。用繁體中文回答,格式固定:【結論】一句話明確說出動作(賣出/減碼多少股/續抱/加碼多少股/觀望),不可模稜兩可;【邏輯鏈】用編號列出 4-6 步:事實(附資料日期)→解讀→對照他的規則(成本、損益平衡點、停損價)→權衡正反→結論;【反方論點】最強的反對理由;【什麼情況我會改變結論】具體價位或事件;【這一步教你什麼】一句投資觀念。使用者反駁時,逐點回應:他說對的地方要承認並修正結論,說錯的地方要用資料和邏輯說明為什麼,不要為了討好而改口。停損線只能往上移,不可建議往下移;已觸發停損時,要明說規則要求出場,若建議不全出,必須給出理由與新的最後防線和期限。';
+    return [
+      role,
+      '規則:1) 你現在不能上網。只能根據下方資料和你已有的一般知識回答;下方沒有的即時數字,直接說沒有,不要編造。提到價格時註明資料日期。',
+      '2) 使用者看得懂券商的庫存損益畫面,回答時可以直接引用他的投資成本、損益平衡點、報酬率。',
+      '3) 最後由使用者自己決定是否交易;不必每次重複免責聲明,頁面已有。回答盡量在 400 字內,除非使用者要求詳細。',
+      '',
+      '【投資取向】' + JSON.stringify(S.profile || {}),
+      '【持股與損益】' + (S.holdings.length ? JSON.stringify(holdingsForContext()) : '(尚未填寫)'),
+      '【最新晨報】' + (lite ? JSON.stringify(lite).slice(0, 16000) : '(目前沒有晨報)')
+    ].join('\n');
+  }
+  var copy = { not_granted:'你沒有允許使用 Claude,所以無法回答。重新整理頁面後可以再允許一次。', rate_limited:'問太頻繁或用量已達上限,請稍後再試。', session_expired:'登入已過期,請重新整理頁面。', upstream_error:'連線中斷,請再送出一次。', prompt_too_large:'內容太長,請清除對話後再問。', refused:'這個問題 Claude 無法回答,請換個問法。', empty_completion:'沒有收到回答,請換個問法。' };
+  function addMsg(role, text, c){ var m = el('div', {class:'msg ' + role + (c ? ' ' + c : ''), text:text}); $('#chat').append(m); return m; }
+  function setBusy(b){ S.busy = b; $('#send').disabled = b; $('#stop').hidden = !b; }
+
+  async function ask(){
+    var q = $('#q').value.trim();
+    if (!q || S.busy) return;
+    if (!S.sample){ addMsg('a', '目前無法使用問答功能。請在 Claude 裡開啟這個頁面。', 'err'); return; }
+    $('#q').value = '';
+    addMsg('u', q);
+    S.turns.push({ role:'user', content:q });
+    var bubble = addMsg('a', '思考中…');
+    bubble.scrollIntoView({block:'nearest'});
+    S.ctl = new AbortController();
+    setBusy(true);
+    var input = [{ role:'user', content: buildContext() }].concat(S.turns.slice(-12));
+    try {
+      var r = await S.sample(input, { cache:false, signal:S.ctl.signal, onText:function(u){ bubble.textContent = u.text; } });
+      S.turns.push({ role:'assistant', content:r.text });
+      if (r.truncated) bubble.textContent = r.text + '\n\n(回答被截斷,請把問題拆小一點再問。)';
+    } catch(e){
+      S.turns.pop();
+      if (e && e.code === 'cancelled') bubble.textContent = (e.text || '') || '已停止。';
+      else { bubble.textContent = (e && e.text ? e.text + '\n\n' : '') + (copy[e && e.code] || copy.upstream_error); bubble.classList.add('err'); }
+    } finally { setBusy(false); }
+  }
+  $('#askForm').addEventListener('submit', function(e){ e.preventDefault(); ask(); });
+  $('#q').addEventListener('keydown', function(e){ if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)){ e.preventDefault(); ask(); } });
+  $('#stop').addEventListener('click', function(){ if (S.ctl) S.ctl.abort(); });
+  $('#clearChat').addEventListener('click', function(){ if (S.busy) return; S.turns = []; $('#chat').textContent = ''; });
+
+  /* ---------- boot ---------- */
+  renderBrief(); renderHold(); renderLearn();
+  (async function boot(){
+    var c = window.claude;
+    if (!c || !c.use) return;
+    var got = await Promise.all([c.use('db'), c.use('user'), c.use('sample')]);
+    var db = got[0], user = got[1];
+    S.sample = got[2];
+    if (!db){ renderBrief(); return; }
+    S.dbOK = true;
+    db.collection('briefs').orderBy('date', 'desc').limit(14).onSnapshot(function(snap){
+      S.briefs = snap.docs.map(function(d){ return d.data(); }).filter(function(x){ return x && x.date; });
+      renderBrief(); renderHold(); renderLearn();
+    }, function(){ renderBrief(); });
+    db.doc('intraday/latest').onSnapshot(function(snap){
+      S.intraday = snap.exists ? snap.data() : null; renderBrief();
+    }, function(){});
+    db.doc('quotes/latest').onSnapshot(function(snap){
+      var d = snap.exists ? snap.data() : null;
+      S.quotes = d && d.items ? d.items : {}; S.quotesAsOf = d && d.asOf ? str(d.asOf) : '';
+      renderHold();
+    }, function(){});
+    var uid = user ? await user.id() : null;
+    if (uid){
+      S.portRef = db.doc('data/users/' + uid + '/portfolio');
+      S.portRef.onSnapshot(function(snap){
+        if (snap.metadata.hasPendingWrites) return;
+        var d = snap.exists ? snap.data() : {};
+        S.profile = Object.assign({}, d.profile || {});
+        S.holdings = arr(d.holdings).map(function(h){ return Object.assign({}, h); });
+        S.decisions = arr(d.decisions).slice();
+        renderBrief();
+        fillProfile(); renderHold();
+      }, function(){ renderHold(); });
+    } else renderHold();
+  })();
+})();
+</script>
