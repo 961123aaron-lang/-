@@ -328,7 +328,13 @@
   let db = null, room = null, comments = null, canEdit = false;
   let peers = [];
 
-  const courses = () => D.courses.slice().sort((a, b) => (a.order || 0) - (b.order || 0));
+  const allCourses = () => D.courses.slice().sort((a, b) => (a.order || 0) - (b.order || 0));
+  const courses = () => allCourses().filter(c => !c.hidden);
+  // 一科可以有好幾個上課時段（例如會計的實習課）；舊資料只有 day/periods/room。
+  const slots = c => Array.isArray(c.slots) && c.slots.length ? c.slots : (c.day != null ? [{ day: c.day, periods: c.periods, room: c.room }] : []);
+  const PERIOD_START = { 1:'08:10', 2:'09:10', 3:'10:10', 4:'11:10', 5:'13:10', 6:'14:10', 7:'15:10', 8:'16:10' };
+  const startOf = p => PERIOD_START[parseInt(String(p || ''), 10)] || '';
+  const slotText = s => [`週${WD[s.day]}`, per(s), s.room].filter(Boolean).join(' ');
   const subjects = () => {
     const base = D.subjects.length ? D.subjects : DEFAULT_SUBJECTS;
     if(!D.courses.length) return base;
@@ -521,12 +527,13 @@
     for(let i = 0; i < 7; i++){
       const d = addDays(today0, i), w = weekNo(d);
       if(w < 1 || w > SEM_WEEKS) continue;
-      const list = courses().filter(c => c.day === d.getDay());
+      const list = allCourses().flatMap(c => slots(c).filter(s => s.day === d.getDay()).map(s => ({ c, s })))
+        .sort((a, b) => (parseInt(a.s.periods, 10) || 99) - (parseInt(b.s.periods, 10) || 99));
       if(!list.length) continue;
       const label = i === 0 ? '今天的課' : i === 1 ? '明天的課' : `下次上課：${fmtDate(d)}`;
-      const items = list.map(c => {
+      const items = list.map(({ c, s }) => {
         const t = (c.weeks || [])[w - 1] || '';
-        return `<li class="${/停課|放假|補假/.test(t) ? 'off' : ''}"><b>${esc(c.short)}</b><span class="mono">${esc([per(c), c.room].filter(Boolean).join(' · '))}</span><span class="tp">${esc(t)}</span></li>`;
+        return `<li class="${/停課|放假|補假/.test(t) ? 'off' : ''}"><b>${esc(c.short)}</b><span class="mono">${esc([startOf(s.periods), s.room].filter(Boolean).join(' · '))}</span><span class="tp">${esc(t || s.label || '')}</span></li>`;
       }).join('');
       return `<div class="todaybox"><div class="th"><b>${label}</b><span class="mono">第 ${w} 週 · ${weekRange(w)}</span></div><ul>${items}</ul></div>`;
     }
@@ -543,18 +550,18 @@
       <div class="gleg">${g.map((x, i) => `<span><i class="g${i % 3}"></i>${esc(x.k)} <b>${esc(x.v)}%</b></span>`).join('')}</div>` : '';
     const up = events().filter(e => e.subj === c.short && e.days >= 0).slice(0, 2);
     return `<article class="course" id="c-${esc(c.id)}" data-comment-target>
-      <div class="chd"><h3>${esc(c.name)}</h3><div class="cmeta">${esc(c.teacher)}　${c.day != null ? `週${WD[c.day]} ${esc(per(c))}` : esc(per(c))}　${esc(c.room)}</div></div>
-      <div class="wkrow">
+      <div class="chd"><h3>${esc(c.name)}</h3><div class="cmeta">${[c.teacher, ...slots(c).map(slotText)].filter(Boolean).map(esc).join('　')}</div></div>
+      ${weeks.length ? `<div class="wkrow">
         <div class="wk now"><span>本週 · 第 ${cur} 週</span><b>${esc(weeks[cur - 1] || '—')}</b></div>
         ${cur < SEM_WEEKS ? `<div class="wk"><span>下週 · 第 ${cur + 1} 週</span><b>${esc(weeks[cur] || '—')}</b></div>` : ''}
-      </div>
+      </div>` : ''}
       ${up.length ? `<div class="cnext">${up.map(e => `<span><b>${TYPES[e.type] || ''}</b> ${esc(e.title)} · ${fmtDate(e.dateObj)}${e.days <= 7 ? ` <em class="${urgency(e)}">還剩 ${e.days} 天</em>` : ''}</span>`).join('')}</div>` : ''}
       ${bar}${c.gradingNote ? `<p class="gnote">${esc(c.gradingNote)}</p>` : ''}
       <div class="cnotes"><h4>老師上課重點</h4>
         ${items.length ? `<ul>${items.map(t => `<li>${esc(t)}</li>`).join('')}</ul><div class="src">來源：${esc(n.src || '課堂紀錄')}${n.updatedAt ? `　最後更新 ${fmtUpd(n.updatedAt)}` : ''}</div>` : '<p class="none">還沒有人整理。上完課記得的重點，按「補充這科」寫一句就好。</p>'}
       </div>
       ${c.note ? `<p class="gnote">${esc(c.note)}</p>` : ''}
-      <details class="allwk"><summary>完整 ${weeks.length} 週進度</summary><ol>${weeks.map((t, i) => `<li class="${i + 1 === cur ? 'cur' : ''}"><span class="mono">W${i + 1}</span><span class="mono d">${weekRange(i + 1)}</span><span>${esc(t)}</span></li>`).join('')}</ol></details>
+      ${weeks.length ? `<details class="allwk"><summary>完整 ${weeks.length} 週進度</summary><ol>${weeks.map((t, i) => `<li class="${i + 1 === cur ? 'cur' : ''}"><span class="mono">W${i + 1}</span><span class="mono d">${weekRange(i + 1)}</span><span>${esc(t)}</span></li>`).join('')}</ol></details>` : ''}
       <div class="acts">
         <button class="mini" data-contrib="c-${esc(c.id)}" data-label="${esc(c.short + '｜上課重點')}">補充這科</button>
         ${c.practice ? `<a class="mini" href="${esc(c.practice)}" target="_blank" rel="noopener">去刷題 ↗</a>` : ''}
