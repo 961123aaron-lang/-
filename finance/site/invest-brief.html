@@ -135,6 +135,10 @@
   .priceedit:first-of-type{border-top:0}
   .priceedit input{padding:8px 10px;font-size:14px}
 
+  .pick{border:1px solid var(--line-soft);background:var(--surface-2);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+  .pk3{display:grid;gap:4px;font-size:13px}
+  .pk3 .k{color:var(--muted);margin-right:8px;font-size:12px}
+  .pk3 .v{font-family:var(--font-mono);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
   .alert{border:1px solid var(--up);background:linear-gradient(180deg,var(--up-bg),rgba(229,112,94,.04)),var(--surface);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
   .alert h3{margin:0;font-size:15.5px;color:var(--up)}
   .alert .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -520,13 +524,13 @@
           return el('div', {class:'holdrow'}, [
             el('div', {class:'holdhead'}, [ el('b', {text:str(t.name)}), t.horizon ? el('span', {class:'act hold', text:str(t.horizon)}) : null ]),
             el('div', {class:'watch', text:str(t.why)}),
-            arr(t.stocks).length ? el('div', {class:'tablewrap', style:'margin-top:6px'}, [ el('table', null, [
-              el('thead', null, [ el('tr', null, ['個股','建議','買進區間','停損','目標','理由'].map(function(x){ return el('th', {text:x}); })) ]),
-              el('tbody', null, t.stocks.map(function(k){ return el('tr', null, [
-                el('td', null, [ el('span', {class:'sym', text:str(k.symbol)}), ' ', str(k.name) ]),
-                el('td', null, [ el('span', {class:'act ' + (k.rank === '首選' ? 'add' : 'hold'), text:str(k.rank || '觀察')}) ]),
-                el('td', {class:'mono', text:str(k.entry)}), el('td', {class:'mono down', text:str(k.stop)}), el('td', {class:'mono up', text:str(k.target)}),
-                el('td', {class:'note', text:str(k.reason)}) ]); })) ]) ]) : null
+            arr(t.stocks).length ? el('div', {class:'stack', style:'margin-top:8px'}, t.stocks.map(function(k){ return el('div', {class:'pick'}, [
+              el('div', {class:'holdhead'}, [ el('span', null, [ el('span', {class:'sym', text:str(k.symbol)}), ' ', el('b', {text:str(k.name)}) ]), el('span', {class:'act ' + (k.rank === '首選' ? 'add' : 'hold'), text:str(k.rank || '觀察')}) ]),
+              el('div', {class:'pk3'}, [
+                el('div', null, [ el('span', {class:'k', text:'買進區間'}), el('span', {class:'v', text:str(k.entry)}) ]),
+                el('div', null, [ el('span', {class:'k', text:'停損'}), el('span', {class:'v down', text:str(k.stop)}) ]),
+                el('div', null, [ el('span', {class:'k', text:'目標'}), el('span', {class:'v up', text:str(k.target)}) ]) ]),
+              k.reason ? el('div', {class:'watch', text:str(k.reason)}) : null ]); })) : null
           ]);
         })),
         el('p', {class:'legend', text:'價位是依當日資料推算的參考區間,不是保證。進場前看券商 App 即時價,並先決定好停損。'}) ]));
