@@ -449,13 +449,27 @@
         }});
         save.hidden = true;
         card.append(el('div', {class:'row'}, [
-          el('button', {class:'btn', type:'button', text:'我已照規則執行', onclick:function(){ logDecision(h.symbol, 'execute', '', c.price); }}),
+          el('button', {class:'btn', type:'button', text:'我已照規則執行', onclick:function(){ executeSale(h, c.price); }}),
           el('button', {class:'ghost', type:'button', text:'不執行,寫下理由', onclick:function(){ ta.hidden = false; save.hidden = false; ta.focus(); }}),
           el('button', {class:'ghost', type:'button', text:'問顧問', onclick:function(){ askAbout(str(h.name) + ' ' + str(h.symbol) + ' 已觸發停損(市價 ' + c.price + ' ≤ 停損 ' + c.stop + ')。請給我明確結論和完整邏輯鏈:該全賣、減碼還是續抱?為什麼?'); }})
         ]), ta, save);
       }
       box.append(card);
     });
+  }
+  // 按「我已照規則執行」時,同步扣掉賣出的股數(成本按比例縮減),持股表才會跟券商一致
+  function executeSale(h, price){
+    var have = Number(h.shares) || 0, ans = window.prompt('你賣出了幾股?(目前持有 ' + have + ' 股;全賣請輸入 ' + have + ')', String(have));
+    if (ans === null) return;
+    var n = Math.floor(Number(ans));
+    if (!(n > 0) || n > have){ toast('股數要在 1 到 ' + have + ' 之間'); return; }
+    var left = have - n;
+    if (left <= 0){ S.holdings = S.holdings.filter(function(x){ return x !== h; }); }
+    else {
+      var ic = Number(h.investCost) > 0 ? Number(h.investCost) : have * Number(h.cost);
+      h.investCost = Math.round(ic * left / have); h.shares = left;
+    }
+    logDecision(h.symbol, 'execute', '賣出 ' + n + ' 股,剩 ' + left + ' 股', price);
   }
   function logDecision(sym, type, note, price){
     S.decisions = arr(S.decisions).concat([{ date: new Date().toISOString(), symbol: sym, type: type, note: note, price: price }]).slice(-200);
