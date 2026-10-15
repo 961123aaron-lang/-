@@ -463,13 +463,30 @@
     if (ans === null) return;
     var n = Math.floor(Number(ans));
     if (!(n > 0) || n > have){ toast('股數要在 1 到 ' + have + ' 之間'); return; }
-    var left = have - n;
+    var px = Number(window.prompt('成交價是多少?', String(price || '')));
+    if (!(px > 0)) px = Number(price) || 0;
+    var left = have - n, ic = calc(h).invest, part = Math.round(ic * n / have);
+    var real = px ? realized(h, n, px, part) : null;
     if (left <= 0){ S.holdings = S.holdings.filter(function(x){ return x !== h; }); }
-    else {
-      var ic = Number(h.investCost) > 0 ? Number(h.investCost) : have * Number(h.cost);
-      h.investCost = Math.round(ic * left / have); h.shares = left;
-    }
-    logDecision(h.symbol, 'execute', '賣出 ' + n + ' 股,剩 ' + left + ' 股', price);
+    else { h.investCost = Math.round(ic - part); h.shares = left; }
+    logDecision(h.symbol, 'execute', '賣出 ' + n + ' 股' + (px ? ',成交價 ' + px : '') + ',剩 ' + left + ' 股' + (real != null ? ',已實現損益約 ' + sgn(real) + ' 元' : ''), px || price);
+  }
+  /* 賣出淨收入 − 這部分的投資成本(手續費 0.1425%×折數、證交稅,無條件捨去) */
+  function realized(h, n, px, part){
+    var disc = Number(S.profile && S.profile.feeDiscount); if (!(disc > 0)) disc = 10;
+    var amt = n * px, fee = Math.floor(amt * 0.001425 * disc / 10), tax = Math.floor(amt * (h.kind === 'ETF' ? 0.001 : 0.003));
+    return Math.round(amt - fee - tax - part);
+  }
+  /* 刪除 = 整檔賣出(或打錯要移除):問成交價,有填就記一筆已實現損益 */
+  function sellAll(h, c){
+    var ans = window.prompt('整檔移除 ' + str(h.name || h.symbol) + '。如果是賣出,請輸入成交價(留空=只是移除,不記錄)', '');
+    if (ans === null) return;
+    var px = Number(ans);
+    S.holdings = S.holdings.filter(function(x){ return x !== h; });
+    if (px > 0){
+      var real = realized(h, c.sh, px, Math.round(c.invest));
+      logDecision(h.symbol, 'execute', '全部賣出 ' + c.sh + ' 股,成交價 ' + px + ',已實現損益約 ' + sgn(real) + ' 元', px);
+    } else { renderAllHold(); savePortfolio(); }
   }
   function logDecision(sym, type, note, price){
     S.decisions = arr(S.decisions).concat([{ date: new Date().toISOString(), symbol: sym, type: type, note: note, price: price }]).slice(-200);
@@ -575,9 +592,17 @@
     var us = marketCard('美股', b.us); if (us) p.append(us);
     var tw = marketCard('台股', b.tw); if (tw) p.append(tw);
 
-    if (arr(b.holdings).length && S.isOwner){
+    if (S.isOwner && (S.holdings.length || arr(b.holdings).length)){
+      /* 以使用者「現在」的庫存為準:晨報漏掉的(例如晨報產生後才買的)明確標出來,已賣掉的不再顯示 */
+      var bhs = arr(b.holdings), mine = S.holdings.length ? S.holdings : bhs;
       p.append(el('div', {class:'card'}, [ el('h2', {class:'lbl', text:'我的持股:今日建議'}),
-        el('div', null, b.holdings.map(function(h){
+        el('div', null, mine.map(function(own){
+          var h = bhs.find(function(x){ return str(x.symbol) === str(own.symbol); });
+          if (!h) return el('div', {class:'holdrow'}, [
+            el('div', {class:'holdhead'}, [ el('span', null, [ el('span', {class:'sym', text:str(own.symbol)}), ' ', str(own.name) ]) ]),
+            el('div', {class:'callout', text:'這份晨報產生時還沒有這檔(可能是之後才買進)。盤中更新或盤後整理會自動補上完整分析;想現在就看,按下面的按鈕。'}),
+            el('div', {class:'rowbtns'}, [ el('button', {class:'ghost', type:'button', text:'請 Claude 先分析這檔', onclick:function(){ var c = calc(own); askAbout('我剛買進 ' + str(own.symbol) + ' ' + str(own.name) + ' ' + c.sh + ' 股,成交均價 ' + c.avg + (c.price != null ? ',現價 ' + c.price : '') + '。請用中短期角度給我明確結論(續抱/減碼/停損)、完整邏輯鏈、停損價與改變結論的條件,並說明它和我其他持股的題材是否重疊。'); }}) ])
+          ]);
           var a = ACTIONS[h.action];
           return el('div', {class:'holdrow'}, [
             el('div', {class:'holdhead'}, [ el('span', null, [ a ? el('span', {class:'act ' + a[1], text:a[0]}) : null, el('span', {class:'sym', text:str(h.symbol)}), ' ', str(h.name) ]),
@@ -693,7 +718,7 @@
       var chg = c.price != null ? Math.round((c.price - c.avg) * 100) / 100 : null; /* broker convention: 市價 − 成交均價 */
       return el('tr', null, [
         el('td', {class:'sticky'}, [ el('span', {class:'sym', text:str(h.symbol)}), ' ', str(h.name), flag ? el('span', {class:'flag', text:flag}) : null,
-          el('button', {class:'del', type:'button', 'aria-label':'刪除 ' + str(h.symbol), text:'刪除', onclick:function(){ if (S.confirmDel === i){ S.confirmDel = null; S.holdings.splice(i,1); renderAllHold(); savePortfolio(); } else { S.confirmDel = i; toast('再按一次「刪除」確認移除 ' + str(h.symbol)); } }}) ]),
+          el('button', {class:'del', type:'button', 'aria-label':'刪除 ' + str(h.symbol), text:'刪除', onclick:function(){ if (S.confirmDel === i){ S.confirmDel = null; sellAll(h, c); } else { S.confirmDel = i; toast('再按一次「刪除」確認移除 ' + str(h.symbol)); } }}) ]),
         el('td', {class:'num mono ' + (c.pl != null ? cls(c.pl) : ''), text: c.pl != null ? sgn(c.pl) : '—'}),
         el('td', {class:'num mono ' + (c.pl != null ? cls(c.pl) : ''), text: c.pl != null ? sgn(c.ret * 100, 2) + '%' : '—'}),
         el('td', {class:'num mono', text: c.income != null ? fmt(c.income) : '—'}),
@@ -722,7 +747,7 @@
     box.append(el('div', {class:'tablewrap pltable'}, [ el('table', null, [
       el('thead', null, [ el('tr', null, heads.map(function(t, k){ return el('th', {class: k === 0 ? 'sticky' : (k === 4 || k === 13 ? '' : 'num'), text:t}); })) ]),
       el('tbody', null, rows) ]) ]));
-    box.append(el('p', {class:'legend', text:'市價為收盤價,不是即時價。台股手續費 0.1425% × 折數、證交稅股票 0.3% / ETF 0.1%,金額無條件捨去,與券商可能有幾元差異。漲跌 = 市價 − 成交均價(跟券商相同)。損益平衡點 = 賣出後剛好不賠的價格。'}));
+    box.append(el('p', {class:'legend', text:'市價取「你填的」與「排程查詢」中日期較新的一個(小字標示來源與日期),不是即時報價。台股手續費 0.1425% × 折數、證交稅股票 0.3% / ETF 0.1%,金額無條件捨去,與券商可能有幾元差異。漲跌 = 市價 − 成交均價(跟券商相同)。損益平衡點 = 賣出後剛好不賠的價格。'}));
     box.append(el('div', {class:'rowbtns', style:'margin-top:12px'}, [
       el('button', {class:'btn', type:'button', text:'請 Claude 做持股健檢', onclick:function(){ askAbout('請幫我做一次完整的持股健檢:逐檔說明現在的損益狀況、離損益平衡點還差多少、以我中短期的投資期間該續抱/減碼/停損的條件,再評估整體集中度與風險,最後給我接下來一到兩週的具體行動清單。'); }})
     ]));
